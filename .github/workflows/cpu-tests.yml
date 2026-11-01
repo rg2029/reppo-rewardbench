@@ -30,6 +30,9 @@ jobs:
           cp examples/pilot_cases.jsonl /tmp/pilot_cases_original.jsonl
           python tools/generate_smoke.py
           cmp examples/pilot_cases.jsonl /tmp/pilot_cases_original.jsonl
+          cp examples/generated_arithmetic_smoke_cases.jsonl /tmp/generated_smoke_original.jsonl
+          python tools/generate_smoke.py
+          cmp examples/generated_arithmetic_smoke_cases.jsonl /tmp/generated_smoke_original.jsonl
       - name: Check mechanism and longitudinal simulation fixtures (no live calls)
         run: |
           python tools/build_mechanism_demo.py
