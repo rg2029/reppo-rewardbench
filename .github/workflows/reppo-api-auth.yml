@@ -1,0 +1,49 @@
+name: Reppo API authentication (no paid calls)
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - .github/workflows/reppo-api-auth.yml
+jobs:
+  check-auth:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    permissions:
+      contents: read
+    env:
+      REPPO_API_KEY: ${{ secrets.REPPO_API_KEY }}
+    steps:
+      - name: Check API key without creating evaluations
+        shell: bash
+        run: |
+          python - <<'PY'
+          import os
+          import sys
+          from urllib import request, error
+
+          key = os.environ.get("REPPO_API_KEY", "")
+          if not key:
+              print("API secret not yet configured. No external request made.")
+              sys.exit(0)
+
+          url = "https://eval.reppo.xyz/api/v1/agents/eval-requests/pending"
+          req = request.Request(
+              url,
+              headers={"Authorization": "Bearer " + key, "Accept": "application/json"},
+              method="GET",
+          )
+          try:
+              with request.urlopen(req, timeout=30) as response:
+                  if response.status == 200:
+                      print("Reppo API authenticated successfully (HTTP 200).")
+                      print("No evaluation was submitted or billed.")
+                  else:
+                      print("Unexpected API HTTP status; no evaluation was submitted.")
+                      sys.exit(1)
+          except error.HTTPError as exc:
+              print("API authentication returned HTTP", exc.code, "(no evaluation submitted).")
+              sys.exit(1)
+          except Exception:
+              print("Unable to complete API authentication check; no evaluation submitted.")
+              sys.exit(1)
+          PY
