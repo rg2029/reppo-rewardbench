@@ -1,0 +1,57 @@
+name: Import RewardBench source bundle
+on:
+  push:
+    paths:
+      - reppo-rewardbench-v0.4-mechanism-aware.zip
+  workflow_dispatch:
+jobs:
+  import:
+    if: github.repository == 'rg2029/reppo-rewardbench'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Extract checked source archive
+        run: |
+          python - <<'PY'
+          from pathlib import Path, PurePosixPath
+          from zipfile import ZipFile
+          bundle = Path('reppo-rewardbench-v0.4-mechanism-aware.zip')
+          if not bundle.exists():
+              raise SystemExit('Please upload the RewardBench ZIP first.')
+          with ZipFile(bundle) as archive:
+              members = archive.infolist()
+              if len(members) > 200 or sum(x.file_size for x in members) > 3_000_000:
+                  raise SystemExit('Archive exceeded expected bounds')
+              for member in members:
+                  if member.is_dir():
+                      continue
+                  rel = PurePosixPath(member.filename)
+                  if (rel.is_absolute() or '..' in rel.parts or len(rel.parts) < 2
+                          or rel.parts[0] != 'reppo-rewardbench'):
+                      raise SystemExit('Unexpected archive path: ' + member.filename)
+                  if (member.external_attr >> 16) & 0o170000 == 0o120000:
+                      raise SystemExit('Symlinks not permitted')
+                  destination = Path(*rel.parts[1:])
+                  if destination.name in ('.env', 'MANIFEST.sha256'):
+                      continue
+                  destination.parent.mkdir(parents=True, exist_ok=True)
+                  destination.write_bytes(archive.read(member))
+          bundle.unlink()
+          PY
+      - name: Run offline unit tests
+        run: python -m unittest discover -s tests -q
+      - name: Commit unpacked files
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          if ! git diff --cached --quiet; then
+            git commit -m 'Import RewardBench v0.4 research scaffold'
+            git push
+          fi
