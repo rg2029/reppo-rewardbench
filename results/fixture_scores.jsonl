@@ -1,0 +1,2 @@
+{"task_id": "synthetic_001", "fixture_only": true, "majority_scores": [0.6666666666666666, 0.3333333333333333, 0.6666666666666666], "pairwise_accuracy": 1.0, "reppo_scores": null, "note": "No live Reppo API calls, policy updates or empirical claims."}
+{"task_id": "synthetic_002", "fixture_only": true, "majority_scores": [0.6666666666666666, 0.3333333333333333, 0.6666666666666666], "pairwise_accuracy": 0.0, "reppo_scores": null, "note": "No live Reppo API calls, policy updates or empirical claims."}

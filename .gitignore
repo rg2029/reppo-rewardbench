@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+.env
+.env.*
+*.pem
+secrets*/
+runs/
+results/*.json
+results/*.jsonl
+!results/fixture_scores.jsonl

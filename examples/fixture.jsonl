@@ -1,0 +1,2 @@
+{"task_id":"synthetic_001","instruction":"Return the number two","candidates":[{"answer":"2","verified_correct":1},{"answer":"3","verified_correct":0},{"answer":"2","verified_correct":1}]}
+{"task_id":"synthetic_002","instruction":"Return the word blue","candidates":[{"answer":"green","verified_correct":0},{"answer":"blue","verified_correct":1},{"answer":"green","verified_correct":0}]}

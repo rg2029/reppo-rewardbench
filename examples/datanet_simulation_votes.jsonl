@@ -1,0 +1,2 @@
+{"allocation_fraction": 1, "datanet_id": "SIMULATION-ONLY", "direction": 1, "elapsed_seconds": 0, "epoch_id": "sim-epoch-0", "epoch_seconds": 100, "gamma": 2, "lock_epochs": 4, "locked_reppo": 100, "max_lock_epochs": 4, "pod_id": "pod-1", "voter_pseudonym": "voter-A"}
+{"allocation_fraction": 1, "datanet_id": "SIMULATION-ONLY", "direction": -1, "elapsed_seconds": 50, "epoch_id": "sim-epoch-0", "epoch_seconds": 100, "gamma": 2, "lock_epochs": 4, "locked_reppo": 150, "max_lock_epochs": 4, "pod_id": "pod-1", "voter_pseudonym": "voter-B"}

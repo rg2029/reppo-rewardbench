@@ -1,0 +1,37 @@
+name: CPU tests (no API calls)
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+jobs:
+  unittest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Run standard library tests
+        run: python -m unittest discover -s tests -v
+      - name: Check demo benchmark result generation
+        run: |
+          python tools/build_study_demo.py
+          python -m rewardbench.research --tasks examples/study_smoke_tasks.jsonl --scores examples/study_simulated_scores.jsonl --split smoke --out runs/demo-only/report.json
+      - name: Check Hugging Face smoke data generated deterministically
+        run: |
+          cp hf/dataset/data/smoke_preview.jsonl /tmp/smoke_preview_original.jsonl
+          python tools/build_hf_preview.py
+          cmp hf/dataset/data/smoke_preview.jsonl /tmp/smoke_preview_original.jsonl
+      - name: Check smoke fixture generated deterministically
+        run: |
+          cp examples/pilot_cases.jsonl /tmp/pilot_cases_original.jsonl
+          python tools/generate_smoke.py
+          cmp examples/pilot_cases.jsonl /tmp/pilot_cases_original.jsonl
+      - name: Check mechanism and longitudinal simulation fixtures (no live calls)
+        run: |
+          python tools/build_mechanism_demo.py
+          python -m rewardbench.longitudinal --tasks examples/study_smoke_tasks.jsonl --scores examples/epoch_simulation_scores.jsonl --split smoke --out runs/demo-only/epoch_report.json
+          python -m rewardbench.datanet_replay --votes examples/datanet_simulation_votes.jsonl --out runs/demo-only/replayed_pods.jsonl
