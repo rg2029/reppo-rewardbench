@@ -6,7 +6,8 @@ The labels aren't passed to Reppo when the pilot client calls the API.
 import json
 from pathlib import Path
 
-out = Path(__file__).resolve().parents[1] / "examples" / "pilot_cases.jsonl"
+# Keep the five-task legacy API pilot fixture untouched.
+out = Path(__file__).resolve().parents[1] / "examples" / "generated_arithmetic_smoke_cases.jsonl"
 rows = []
 for i in range(20):
     a = 12 + 7*i
