@@ -4,8 +4,8 @@ This project is not a scientific publication merely because its code passes CI.
 
 | Gate | Required before passing | Current status |
 | --- | --- | --- |
-| G0: working scaffold | Offline unit tests, API mock contract, non-secret config | **Pass (48 local CPU tests, mechanism demo, no paid calls)** |
-| G1: real API smoke | One genuine settled evaluation + privacy and billing audit | **Blocked on rotated key** |
+| G0: working scaffold | Offline unit tests, API mock contract, non-secret config | **Pass (48 CPU tests; two API smoke evaluations completed separately)** |
+| G1: real API smoke | One genuine settled evaluation + privacy and billing audit | **Passed API integration: two settled evaluations; billing reconciliation pending** |
 | G2: validated reward dataset | >=100 licensed coding-agent tasks, authentic generated candidates, verifier artifacts, sealed holdout, independently checked | **Not done** |
 | G3: reward baselines | Same candidates with Reppo, single judge, uniform peer baseline; complete coverage and confidence intervals | **Not done** |
 | G4: economic causality | Genuine weights/stakes and aggregation procedure with same assessors/responses (plus sham/flat-weight controls) | **Not done** |

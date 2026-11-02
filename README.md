@@ -2,7 +2,7 @@
 
 **Research question:** Can independent economic feedback improve reinforcement learning?
 
-**Current status:** offline research methods + whitepaper equation replay + asynchronous Reppo API adapter + verified test harness + 10-candidate *sanity check* fixture. No live evaluations, RL optimization, or scientific conclusions yet. [Current status](results/STATUS.md).
+**Current status:** offline research methods + whitepaper equation replay + asynchronous Reppo API adapter + verified test harness + 10-candidate *sanity check* fixture. Two live arithmetic integration evaluations completed; no coding-agent research results, RL optimization, or scientific conclusions yet. [Current status](results/STATUS.md).
 
 ## Updated mechanism-first design (v0.4)
 
@@ -19,14 +19,14 @@ python -m rewardbench.longitudinal --tasks examples/study_smoke_tasks.jsonl --sc
 python -m rewardbench.datanet_replay --votes examples/datanet_simulation_votes.jsonl --out runs/demo-only/datanet_votes.jsonl
 ```
 
-**Still not a publishable research finding:** zero genuine Reppo evaluations, zero independent coding-agent verification logs, zero policy weight updates. A fully replicable demonstration requires real, privacy-cleared exported logs, baseline model responses, and independently test-verified candidate patches. See [current status](results/STATUS.md).
+**Still not a publishable research finding:** two settled arithmetic integration evaluations, zero independently verified coding-agent outcomes, and zero policy weight updates. A fully replicable demonstration requires real, privacy-cleared exported logs, baseline model responses, and independently test-verified candidate patches. See [current status](results/STATUS.md).
 
 ## 2026-11-01 research-facing additions
 
 - `rewardbench/research.py`: **offline** source validation, score ingestion, task-level pairwise accuracy, matched comparisons, coverage and task-clustered bootstrap; refuses duplicate, missing or simulated scores disguised as observed.
 - `rewardbench/swebench_import.py`: strict bridge for independently generated coding patches and actual SWE-bench verifier manifests, rejecting candidates without provenance or proof. It does **not** run SWE-bench or provide candidate patches.
 - `docs/SWEBENCH_BRIDGE.md`: instructions for a legitimate coding-agent dataset, external test verification, leakage protections and licensing.
-- `hf/dataset/`: Hugging Face data card plus **smoke-only** preview JSONL. `hf/space/`: Gradio audit-report viewer with no fabricated leaderboard. Neither is published yet.
+- `hf/dataset/`: Hugging Face data card plus **smoke-only** preview JSONL. `hf/space/`: Gradio audit-report viewer with no fabricated leaderboard. Both are deployed privately on Hugging Face; the Space is running as a free static viewer.
 - `publication/ABSTRACT_DRAFT.md` and `docs/RESEARCH_RELEASE_GATES.md`: paper draft and falsifiable publication gates.
 - **Scientific status: NOT ESTABLISHED.** No real peer scores, independent coding-agent verifications, economic weighting ablation or policy weight updates have been collected.
 
@@ -104,4 +104,4 @@ Reppo is a three-person startup with a $500 budget ceiling for this pilot, not a
 - Official SWE-bench public submission artifacts: https://github.com/SWE-bench/experiments
 - Founder-friendly current status: [docs/FOUNDER_STATUS.md](docs/FOUNDER_STATUS.md)
 
-**No third-party paid API calls have been executed by this project in its shipped state. No GPU allocation or spend has occurred.**
+**Two real Reppo API evaluations settled (880 credits reported, approximately $0.088 at the documented conversion, not a verified invoice). No benchmark GPU training has occurred.** See `docs/LIVE_SMOKE_RESULT_2026-11-01.md`.

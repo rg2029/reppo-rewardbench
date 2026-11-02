@@ -15,4 +15,4 @@
 ## Next gate
 Freeze 5–10 fresh or licensed coding-agent task/candidate pairs with independently executed test logs and model provenance; compare fixed single judge, uniform peers and full Reppo. Report failures, coverage, null findings, costs, and methodological limitations.
 
-The separate two HTML example reports are arithmetic-audited but **not authenticated** as real network execution: see [Private mechanism audit](PRIVATE_FIRST_MECHANISM_AUDIT.md).
+The two HTML reports are confirmed as real by Reppo engineering and pass the displayed voting arithmetic audit, but their network provenance has not been independently verified from the exports. See [mechanism audit](PRIVATE_FIRST_MECHANISM_AUDIT.md).
