@@ -45,7 +45,8 @@ def persist(record, *, creating=False):
         raise RuntimeError("Missing existing claim; fail closed")
     destination.parent.mkdir(parents=True, exist_ok=True)
     temp = destination.with_suffix(".tmp")
-    temp.write_text(json.dumps(record, sort_keys=True, indent=2) + "\n", encoding="utf-8")
+    temp.write_text(json.dumps(record, sort_keys=True, indent=2) + "
+", encoding="utf-8")
     os.replace(temp, destination)
     git("add", "--", str(destination))
     git("commit", "-m", f"audit: reserve or record HF request {fingerprint[:12]} [{record['status']}]")
@@ -89,5 +90,8 @@ def inspect_history():
         row = json.loads(path.read_text(encoding="utf-8"))
         if row.get("fingerprint") != path.stem or row.get("status") not in STATES:
             raise RuntimeError("Malformed ledger record")
-        if "reserve_usd" not in row:\n            raise RuntimeError("Ledger reservation missing; fail closed")\n        result.append({"fingerprint": row["fingerprint"], "status": row["status"],\n                       "reserve_usd": str(amount(row["reserve_usd"]))})
+        if "reserve_usd" not in row:
+            raise RuntimeError("Ledger reservation missing; fail closed")
+        result.append({"fingerprint": row["fingerprint"], "status": row["status"],
+                       "reserve_usd": str(amount(row["reserve_usd"]))})
     return result
