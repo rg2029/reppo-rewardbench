@@ -1,0 +1,75 @@
+name: Reppo paid smoke test (two evaluations)
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - .github/trigger-reppo-smoke-2026-11-01.txt
+
+concurrency:
+  group: reppo-paid-api-smoke
+  cancel-in-progress: false
+
+jobs:
+  two-candidate-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: read
+    env:
+      REPPO_API_KEY: ${{ secrets.REPPO_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Submit at most two public smoke examples and wait for settlement
+        shell: bash
+        run: |
+          python - <<'PY'
+          import os
+          import time
+          from pathlib import Path
+          from rewardbench import pilot
+
+          if not os.environ.get("REPPO_API_KEY"):
+              raise SystemExit("Missing REPPO_API_KEY secret; no paid calls made.")
+
+          run_dir = Path("runs/live-smoke-2026-11-01")
+          pilot.prepare(
+              Path("examples/pilot_cases.jsonl"), run_dir,
+              max_candidates=2, public_approved=True
+          )
+          print("Real API smoke: 1 toy task x 2 candidate answers.")
+          print("Hard limit: 2 submissions; conservative reserved cap: USD 0.44.")
+          print("No inference-time RL or scientific claim is made.", flush=True)
+          try:
+              for iteration in range(2):
+                  pilot.submit_next(run_dir, max_evals=2, max_spend_usd=0.44, live=True)
+                  stop_at = time.monotonic() + 18 * 60
+                  while True:
+                      pilot.poll_once(run_dir, live=True)
+                      state = pilot.load_state(run_dir)
+                      current = state["entries"][iteration]
+                      if current["status"] == "SETTLED":
+                          print(f"Evaluation {iteration+1}/2 settled.", flush=True)
+                          break
+                      if current["status"] == "FAILED":
+                          raise RuntimeError("Evaluation failed. Stop and inspect before any further paid calls.")
+                      if time.monotonic() > stop_at:
+                          raise RuntimeError("Settlement not observed in 18 minutes. Stop; do not create another request.")
+                      time.sleep(60)
+          finally:
+              try:
+                  pilot.report(run_dir)
+                  pilot.status(run_dir)
+              except Exception as exc:
+                  print("Report generation unavailable; checkpoint remains: " + str(type(exc).__name__))
+          PY
+      - name: Save privacy-limited run artifacts for review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reppo-two-candidate-smoke-state
+          path: runs/live-smoke-2026-11-01/
+          if-no-files-found: warn
+          retention-days: 30
