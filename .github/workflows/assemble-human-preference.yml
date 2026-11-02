@@ -1,0 +1,26 @@
+name: Freeze subjective human-preference pilot (no paid calls)
+on:
+  push:
+    paths:
+      - .github/workflows/assemble-human-preference.yml
+jobs:
+  freeze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Pin human preference labels, source data and judge-facing prompts
+        run: python tools/assemble_human_preference.py
+      - name: Store frozen source and label manifest
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: human-preference-preflight
+          path: runs/human-preference-preflight/
+          if-no-files-found: warn
+          retention-days: 60
