@@ -1,6 +1,6 @@
 {
   "study_id": "subjective-natural-50-fixed-judges-2026-11-02",
-  "enable_paid_execution": true,
+  "enable_paid_execution": false,
   "history_reconciled": true,
   "privacy_cleared_task_ids": [
     "helpsteer2-natural-01cd0ea07683341c",
@@ -17,6 +17,7 @@
     "No duplicate POSTs or retries; remote main git ledger records RESERVED and SUBMITTING before every request.",
     "Prior research exposure max tracked 3.14 USD; 12 new calls reserve 6 USD; cumulative tracked exposure 9.14 USD, under founder 500 USD ceiling.",
     "Approval does not authorize the remaining 47 rows or any separate Reppo API calls.",
-    "2026-11-02: earlier new-cohort workflow 41438045214 stopped at preflight NameError before any POST; corrected code and full paid-gate dry run 41438642527 passed. This change triggers a distinct first-attempt workflow; NEVER retry any submitted request."
+    "2026-11-02: earlier new-cohort workflow 41438045214 stopped at preflight NameError before any POST; corrected code and full paid-gate dry run 41438642527 passed. This change triggers a distinct first-attempt workflow; NEVER retry any submitted request.",
+    "2026-11-02 11:43Z: job 41438797939 partial: 9 SETTLED, 1 RESERVED pre-submit, 2 not reached; Git push failed before 10th POST. Paid workflow disabled, never retry automatically."
   ]
 }
