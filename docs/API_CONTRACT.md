@@ -16,7 +16,7 @@ Official docs: https://docs.reppo.ai/api/eval/evaluations and https://docs.reppo
 
 `ReppoAdapter.submit()` posts one evaluation; `ReppoAdapter.get(evalId)` reads it. `summarize_settlement()` extracts final score, peer scores (if present), confidence, evidence basis, and credits while omitting full payloads and critiques from exported analysis.
 
-The mock tests verify path, schema, no ground-truth leakage, payload caps, error states, and resumption logic. Live API authentication has **not** been exercised.
+The mock tests verify path, schema, no ground-truth leakage, payload caps, error states, and resumption logic. Live API authentication and two settled arithmetic smoke evaluations were observed on 2026-11-01; see [the smoke-test report](LIVE_SMOKE_RESULT_2026-11-01.md). This verifies basic interoperability, not the economic aggregation mechanism.
 
 ## Not yet known / product-team clarification
 

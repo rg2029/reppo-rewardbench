@@ -1,6 +1,6 @@
 # Pilot runbook — official Reppo Evaluation API
 
-**Status:** API schema integrated; test fixture integration passed. No authenticated/paid Reppo calls have been made. This runbook is for an authorized operator/agent using a secure environment.
+**Status:** The live API integration passed with two settled arithmetic smoke evaluations. A separate capped, four-candidate archived coding-agent pilot is underway; its results are not yet established. This runbook describes safe operation with a dedicated secret key and one pending request at a time.
 
 ## Official sources verified 2026-11-01
 

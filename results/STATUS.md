@@ -10,7 +10,7 @@
 - **Integrated Reppo mechanism spec** based on founder explanation, public API docs and the published Datanet whitepaper; explicit uncertainty about production API aggregation.
 - **Longitudinal Datanet diagnostic** with task-panel matching, snapshot timestamp validation, observed/simulated provenance, missingness and descriptive matched-baseline changes.
 - **Pod vote replay of published whitepaper equations**; intentionally **not** described as a replay of production Eval API rewards.
-- Hugging Face dataset preview and static Space deployed privately; the Space was confirmed running.
+- Hugging Face dataset preview and static report viewer released **publicly**, with only authored toy data and no scientific efficacy claim.
 - **48 CPU tests passing** locally; deterministic synthetic demonstration fixtures run without network/credentials.
 
 ## Scientific status and resource use
@@ -37,7 +37,7 @@
 
 ## Pending, in dependency order
 
-1. **Credential and environment: completed:** Private GitHub and Hugging Face repos created, API and Hugging Face tokens stored as GitHub Actions secrets (not repository files).
+1. **Credential and environment: completed:** GitHub, Hugging Face dataset and Space are public research previews. API and Hugging Face tokens are stored privately as GitHub Actions secrets, not repository files.
 2. **API gate: integration passed:** Two non-confidential arithmetic evaluations settled, scores 100 and 0. API reported 880 credits; billing and underlying mechanism trace remain to be audited.
 3. **Ground-truth dataset:** Obtain 100+ appropriately licensed coding-agent task/candidate pairs with genuine official isolated-verifier logs and a frozen holdout, ideally from public SWE-bench Verified submissions after rights checks.
 4. **Baselines and results:** Collect fixed single-judge, uniform-ensemble and full-Reppo composite scores on the same candidates; audit score provenance and coverage.
