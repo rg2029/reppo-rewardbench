@@ -23,7 +23,14 @@ def main():
         print("AVAILABLE SPLIT",json.dumps({k:row.get(k) for k in ("config","split","num_rows")},sort_keys=True),flush=True)
     preferred=[r for r in splits.get("splits",[]) if "preference" in r.get("config","").lower()]
     if not preferred:
-        raise SystemExit("No preference config returned; halt rather than infer schema.")
+        # HF server often exposes only the top-level config, not data_dir files.
+        names = sorted(item.get("rfilename", "") for item in info.get("siblings", []))
+        source_files = [name for name in names if "preference" in name.lower() or "disagreement" in name.lower()]
+        print("HF REPO PREFERENCE FILES", json.dumps(source_files[:50]), flush=True)
+        if not source_files:
+            raise SystemExit("No preference files/config found; dataset may have changed.")
+        print("Dataset-server preference config unavailable. Use explicit pinned files for next stage.",flush=True)
+        return
     preferred.sort(key=lambda x:(x.get("split") != "validation",x.get("config",""),x.get("split","")))
     first=preferred[0]
     q=urllib.parse.urlencode({"dataset":DATASET,"config":first["config"],"split":first["split"],"offset":0,"length":50})
