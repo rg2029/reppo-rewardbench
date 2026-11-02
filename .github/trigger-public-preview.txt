@@ -1,0 +1,1 @@
+Founder approved opening the Reppo RewardBench GitHub research preview to the public, and requested the Hugging Face dataset and Space be opened as clearly preliminary artifacts. One-time publication trigger. No internal HTML traces or experimental claims included.
