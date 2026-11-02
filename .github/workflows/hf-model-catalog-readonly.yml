@@ -1,0 +1,22 @@
+name: Hugging Face fixed-judge read-only preflight
+on:
+  push:
+    paths:
+      - 'tools/read_only_hf_model_preflight.py'
+      - '.github/workflows/hf-model-catalog-readonly.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  catalog-get-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: GET inference catalog; no POST or paid actions
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: python -m tools.read_only_hf_model_preflight
