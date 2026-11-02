@@ -9,6 +9,16 @@
     "source_hash": "c77c3f0c2707519db0821f75472addd89cfe8756eba1a279dc74df444fb8d77d"
   },
   "reserve_usd": "0.5",
-  "status": "SUBMITTING",
+  "result_metadata": {
+    "finish_reason": "stop",
+    "provider_request_id": "chatcmpl-853b7840a577b44b",
+    "score": 80.0,
+    "usage": {
+      "completion_tokens": 7,
+      "prompt_tokens": 690,
+      "total_tokens": 697
+    }
+  },
+  "status": "SETTLED",
   "study_id": "subjective-natural-50-fixed-judges-2026-11-02"
 }
