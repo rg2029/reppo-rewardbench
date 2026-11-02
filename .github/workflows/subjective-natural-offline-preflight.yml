@@ -1,0 +1,49 @@
+name: Frozen 50 subjective baseline offline preflight
+on:
+  push:
+    paths:
+      - 'tools/audit_frozen_subjective_50.py'
+      - 'tools/baseline_preflight_guard.py'
+      - 'tools/persistent_hf_request_ledger.py'
+      - 'tools/run_subjective_natural_baseline.py'
+      - 'tools/assemble_subjective_natural.py'
+      - 'tests/test_frozen_subjective_50_audit.py'
+      - 'tests/test_baseline_preflight_guard.py'
+      - 'tests/test_persistent_hf_request_ledger.py'
+      - 'research_controls/hf_subjective_50_gate.json'
+      - '.github/workflows/subjective-natural-offline-preflight.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  offline-preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Run deterministic offline safety unit tests
+        run: |
+          python -m unittest tests.test_baseline_preflight_guard tests.test_frozen_subjective_50_audit tests.test_persistent_hf_request_ledger -v
+      - name: Regenerate pinned 50-pair source from public data (GET only)
+        run: python tools/assemble_subjective_natural.py
+      - name: Audit frozen 50 pair files and hashes (offline)
+        run: |
+          python tools/audit_frozen_subjective_50.py \
+            --inputs runs/subjective-natural-preflight/judge_inputs.jsonl \
+            --labels runs/subjective-natural-preflight/human_labels.jsonl \
+            --output runs/subjective-natural-preflight/offline_audit.json
+      - name: Run independent baseline DRY RUN (no HF token, no POST)
+        run: python tools/run_subjective_natural_baseline.py
+      - name: Publish non-sensitive offline summary
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: subjective-natural-50-offline-summary
+          path: |
+            runs/subjective-natural-preflight/offline_audit.json
+            runs/subjective-natural-fixed-judges/preflight_summary.json
+          if-no-files-found: warn
+          retention-days: 30
