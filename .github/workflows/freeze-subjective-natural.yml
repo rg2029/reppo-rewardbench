@@ -1,4 +1,5 @@
 name: Freeze 50 natural human-preference pairs (no API calls)
+# V2 source freeze: exclude three completed or underway feasibility pilot pairs by exact source hash
 on:
   push:
     paths:
