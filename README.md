@@ -23,7 +23,7 @@ The original voting HTML files remain out of public distribution pending review 
 
 ## How we'll test it
 
-Each task has two or more real agent-generated outputs and a recorded outcome from an independent checker. For coding, that means executable patch tests. We are also designing tracks for tool-call validity, customer-service state changes, and research tasks with checkable answers. Security stress tests are analyzed separately; each domain keeps its own metric and denominator.
+Each task has two or more real agent-generated outputs and a recorded outcome from an independent checker. For coding, that means executable patch tests. We're also testing human preferences, nuanced qualitative judgments, tool-call validity, customer-service state changes, and research tasks. The [subjective-evaluation protocol](docs/SUBJECTIVE_EVALUATION_PROTOCOL.md) treats human disagreement and ties as data rather than forcing a single right answer. Security stress tests remain separate; each domain keeps its own metric and denominator.
 
 For each candidate we collect:
 
