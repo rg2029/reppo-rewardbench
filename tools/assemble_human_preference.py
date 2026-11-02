@@ -53,6 +53,8 @@ def main():
         if any(pattern.search(t) for pattern in SENSITIVE for t in (prompt,response1,response2)):continue
         counts[1][str(row["preference_strength"])]+=1
         usable.append(row)
+    print("SOURCE SPLITS",json.dumps(dict(counts[0]),sort_keys=True),flush=True)
+    print("QUALIFIED VALIDATION PREFERENCE STRENGTH",json.dumps(dict(counts[1]),sort_keys=True),flush=True)
     samples=[]
     for name,predicate in STRATA.items():
         eligible=sorted((r for r in usable if predicate(r["preference_strength"])),key=stable)
