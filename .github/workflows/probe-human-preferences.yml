@@ -1,4 +1,5 @@
 name: Probe human preference research data
+# Retry source-file discovery after HF auto-converted config mismatch
 on:
   push:
     paths:
