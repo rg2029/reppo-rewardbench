@@ -1,0 +1,28 @@
+name: Publish private HF RewardBench previews
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - .github/trigger-hf-private-preview.txt
+jobs:
+  publish-private-preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    env:
+      HF_TOKEN: ${{ secrets.HF_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Confirm HF secret present
+        run: |
+          if [ -z "$HF_TOKEN" ]; then echo 'Missing HF_TOKEN secret; no upload attempted'; exit 1; fi
+      - name: Install minimal Hugging Face upload library
+        run: python -m pip install 'huggingface_hub>=0.36,<2'
+      - name: Publish smoke-only dataset preview to private HF repo
+        run: python tools/publish_hf_private.py --target dataset
+      - name: Publish Gradio viewer preview to private HF Space
+        run: python tools/publish_hf_private.py --target space
