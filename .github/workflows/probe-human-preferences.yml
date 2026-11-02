@@ -1,0 +1,18 @@
+name: Probe human preference research data
+on:
+  push:
+    paths:
+      - .github/workflows/probe-human-preferences.yml
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Read public preference schema; no model calls
+        run: python tools/probe_human_preferences.py
