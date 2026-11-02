@@ -40,6 +40,8 @@ jobs:
             --output runs/subjective-natural-preflight/offline_audit.json
       - name: Run independent baseline DRY RUN (no HF token, no POST)
         run: python -m tools.run_subjective_natural_baseline
+      - name: Exercise all approved paid-budget/privacy/dedup gates without token or POST
+        run: python -m tools.run_subjective_natural_baseline --check-paid-gate-only
       - name: Publish non-sensitive offline summary
         if: always()
         uses: actions/upload-artifact@v4
