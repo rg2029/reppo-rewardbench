@@ -1,4 +1,5 @@
 name: Freeze subjective human-preference pilot (no paid calls)
+# Freeze v2 including the tied-preference cohort after validation split fix
 # Freeze using the upstream val split after source schema check
 # Diagnose upstream source split names without releasing prompt content
 # Stratified weak/strong sample; tie cases in separate benchmark
