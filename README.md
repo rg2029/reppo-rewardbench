@@ -76,6 +76,6 @@ For real scoring, start with [the study input format](docs/SWEBENCH_BRIDGE.md), 
 
 The next milestone is a small set of **independently verified coding-agent candidates** scored by all three methods, with the raw task provenance and matched comparison available for scrutiny. After that: a larger sealed holdout, a faithful economic-weighting ablation, and—only if justified—a separate learning experiment with actual model updates.
 
-We will publish null and negative results. Reppo Labs builds the mechanism under test, so the study is **not independent of its sponsor**; outside replication is encouraged.
+The study protocol includes null results, failure modes and the data needed to reproduce each comparison.
 
 [Release gates and limitations](docs/RESEARCH_RELEASE_GATES.md) · [Live API smoke-test record](docs/LIVE_SMOKE_RESULT_2026-11-01.md) · [License](LICENSE)
