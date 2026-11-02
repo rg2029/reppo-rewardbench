@@ -3,3 +3,5 @@ Founder approved opening the Reppo RewardBench GitHub research preview to the pu
 Rerun: use current Hugging Face update_repo_settings() API. Dataset and Space content already passed release checks.
 
 Editorial refresh: sync approved smoke-only dataset card and static research viewer. No new empirical claims or API spending. November 2026.
+
+2026-11-02: sync accurate exploratory coding-agent outcome (one tie, one wrong rank) to public HF Space and dataset card. No paid API actions.
