@@ -1,0 +1,16 @@
+{
+  "study_id": "subjective-natural-50-fixed-judges-2026-11-02",
+  "enable_paid_execution": false,
+  "history_reconciled": false,
+  "privacy_cleared_task_ids": [],
+  "historic_confirmed_usd": null,
+  "uncertain_prior_charges_usd": null,
+  "incremental_pilot_usd": "25",
+  "notes": [
+    "Founder approved up to $25 additional spend, not an uncapped 50-pair evaluation.",
+    "Resolve all previous project charges and ambiguous HF first POST before enabling.",
+    "Manual privacy and rights clearance required for each selected task ID.",
+    "A new paid workflow must serialize all baseline jobs and push claims to main before POST.",
+    "The authenticated same-judgment economic aggregation trace remains unavailable."
+  ]
+}
