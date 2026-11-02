@@ -1,0 +1,52 @@
+name: Diagnose HF judge permissions and provider model pricing (no inference)
+on:
+  push:
+    paths:
+      - .github/workflows/diagnose-hf-judge-access.yml
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    permissions:
+      contents: read
+    env:
+      HF_TOKEN: ${{ secrets.HF_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Read token permissions and model descriptions without inference requests
+        run: |
+          python - <<'PY'
+          import json,os,urllib.request,urllib.error
+          token=os.environ.get('HF_TOKEN')
+          if not token:raise SystemExit('Missing HF_TOKEN')
+          for endpoint in ('https://huggingface.co/api/whoami-v2',
+                           'https://router.huggingface.co/v1/models'):
+              request=urllib.request.Request(endpoint,headers={'Authorization':'Bearer '+token,
+                       'Accept':'application/json','User-Agent':'Reppo-RewardBench-readonly-diagnostic/0.1'})
+              try:
+                  with urllib.request.urlopen(request,timeout=22) as resp:obj=json.load(resp)
+              except urllib.error.HTTPError as e:
+                  print('READ_ONLY_GET',endpoint.split('/')[-1],'HTTP',e.code)
+                  continue
+              if endpoint.endswith('whoami-v2'):
+                  access=((obj.get('auth') or {}).get('accessToken') or {})
+                  print('ACCESS_TOKEN_ROLE:',access.get('role'))
+                  print('ACCESS_TOKEN_TYPES:', sorted(access.keys()))
+                  fine=access.get('fineGrained') or {}
+                  if isinstance(fine,dict):
+                      print('FINE_GRAINED_PERMISSION_KEYS:',sorted(fine.keys()))
+                      print('FINE_GRAINED_PERMISSION_NAMES:',sorted(str(x) for x in fine.get('permissions',[]) if isinstance(x,(str,int))))
+              else:
+                  wanted={'meta-llama/Llama-3.3-70B-Instruct',
+                          'Qwen/Qwen3-235B-A22B-Instruct-2507'}
+                  for m in (obj.get('data') or []):
+                      if isinstance(m,dict) and m.get('id') in wanted:
+                          # Only selected model ID and public pricing/provider descriptors.
+                          print('MODEL:',m.get('id'),'PUBLIC_MODEL_METADATA:',
+                                json.dumps({k:m.get(k) for k in ('owned_by','pricing','providers','provider')},
+                                           sort_keys=True,default=str)[:1800])
+          print('Read-only diagnostics finished; no model request, no paid call.')
+          PY
