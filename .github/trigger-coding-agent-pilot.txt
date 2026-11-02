@@ -1,0 +1,1 @@
+One-time founder-approved coding-agent feasibility pilot. Exactly 4 sequential live Reppo evaluation submissions, conservative budget reservation USD 0.88, no reruns. Uses archived public SWE-bench verifier artifacts frozen before scoring. November 2026.
