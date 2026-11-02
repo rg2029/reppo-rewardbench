@@ -38,6 +38,7 @@ jobs:
                   fine=access.get('fineGrained') or {}
                   if isinstance(fine,dict):
                       print('FINE_GRAINED_PERMISSION_KEYS:',sorted(fine.keys()))
+                      print('GLOBAL_PERMISSION_RECORD:',json.dumps(fine.get('global',[]),sort_keys=True,default=str)[:1200])
                       print('FINE_GRAINED_PERMISSION_NAMES:',sorted(str(x) for x in fine.get('permissions',[]) if isinstance(x,(str,int))))
               else:
                   wanted={'meta-llama/Llama-3.3-70B-Instruct',
