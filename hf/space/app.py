@@ -1,5 +1,8 @@
 """Static-first HF Space. Explicitly does not call a paid API."""
 import json
+import os
+# Spaces enables SSR by default; disable its Node proxy for this static viewer.
+os.environ["GRADIO_SSR_MODE"] = "False"
 import gradio as gr
 
 INTRO = """# Reppo RewardBench
@@ -49,4 +52,4 @@ with gr.Blocks(title='Reppo RewardBench') as demo:
     gr.Markdown('**Important:** This demo does not verify uploaded reports, call Reppo or upload files to a research server. Confirm independent task labels and candidate provenance before citing any result.')
 
 if __name__ == '__main__':
-    demo.launch()
+    demo.launch(ssr_mode=False, show_error=True)
