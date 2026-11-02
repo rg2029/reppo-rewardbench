@@ -12,13 +12,14 @@ The central comparison is between a fixed single judge, an independently assembl
 
 | Check | Observed | Limit |
 | --- | --- | --- |
+| First coding-agent feasibility run | Four settled Reppo scores on two SWE-bench patch pairs; one tie, one incorrect ranking. Task-macro accuracy **0.25** with ties worth 0.5. | Only two deliberately selected tasks, labels from archived verifier logs (not independently rerun), and no fixed external judge baseline. [Full pilot report](results/CODING_AGENT_FEASIBILITY_2026-11-02.md). |
 | Live Eval API smoke test | Two settled evaluations on one arithmetic prompt. The correct answer scored 100/100, the wrong answer 0/100; the peer mean also ranked them correctly. | An integration check, not a comparison of competing judges. |
 | Two real voting reports, confirmed by Reppo engineering | Four evaluators, five veREPPO voters per report; all 40 recorded allocations reconcile to the displayed totals. | Original network events have not been independently authenticated. |
 | Equal-voter normalization of those reports | Neither report changed its selected evaluator. | These examples do not show an advantage from stake weighting. |
 
 The original voting HTML files remain out of public distribution pending review of their contents and redistribution rights. See the [arithmetic audit](docs/PRIVATE_FIRST_MECHANISM_AUDIT.md), [replay parser](tools/audit_judging_judges.py), and [API smoke result](docs/LIVE_SMOKE_RESULT_2026-11-01.md).
 
-**No matched coding-agent result or reinforcement-learning improvement has been established in this release.** The Hugging Face dataset currently contains ten basic arithmetic *format examples*. They are not benchmark tasks.
+**The first two-task coding-agent feasibility result is now recorded, but a generalizable accuracy advantage or reinforcement-learning improvement has not been established.** The Hugging Face dataset currently contains ten basic arithmetic *format examples*. They are not benchmark tasks.
 
 ## How we'll test it
 

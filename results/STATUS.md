@@ -1,6 +1,6 @@
-# Reppo RewardBench project status — 2026-11-01, v0.4
+# Reppo RewardBench project status — 2026-11-02, v0.5
 
-**Release readiness:** Public scientific release **NOT READY**. Working offline research and integration scaffold, no genuine research outcomes yet.
+**Release readiness:** Public scientific release **NOT READY**. Real coding-agent feasibility results recorded; not yet a controlled or adequately powered scientific study.
 
 ## Implemented and verified
 
@@ -15,16 +15,16 @@
 
 ## Scientific status and resource use
 
-- Actual Reppo authenticated API requests: **2**, both settled (one toy arithmetic task)
-- Actual independently tested coding-agent task results: **0**
-- Observed single judge / uniform ensemble / full Reppo study rows: **0**
+- Actual Reppo authenticated API requests: **6 settled** (2 arithmetic smoke, 4 coding-agent feasibility).
+- Archived third-party verifier-labeled coding-agent task pairs scored by Reppo: **2**. Upstream verifier records and patch hashes preserved; tests not rerun locally.
+- Reppo coding-agent feasibility: **2 matched tasks**, task-macro pairwise accuracy **0.25**, one tie and one incorrect ranking. Equal mean of Reppo-provided peers **0.0** on these tasks, **not** a fixed external ensemble. No independent single-judge or fixed-ensemble matched comparison yet.
 - Genuine economic protocol replay validated against real final reward: **0**
 - Real cross-epoch signal snapshots: **0**
 - Model RL weight updates: **0**
 - Externally reproduced scientific findings: **none**
-- Reppo API reported **880 credits charged** on the integration smoke test. Approximately **$0.088** at the documented conversion, not yet verified against account billing; original project ceiling remains **$500**.
+- Reppo API reported **880 + 1,760 = 2,640 credits charged** across both runs, approximately **$0.264** at the pilot's documented conversion (billing not reconciled). The coding-agent study reserved up to $0.88; overall founder-approved ceiling remains **$500**.
 
-**All bundled example scores are simulated or mock data**. The whitepaper replayer is an equation/unit-test tool, not a claim of field effectiveness.
+**The dataset preview is synthetic; real coding-agent scores are documented separately in [the feasibility report](CODING_AGENT_FEASIBILITY_2026-11-02.md).** The whitepaper replayer is an equation/unit-test tool, not a claim of field effectiveness.
 
 ## Sources audited
 
@@ -39,7 +39,7 @@
 
 1. **Credential and environment: completed:** GitHub, Hugging Face dataset and Space are public research previews. API and Hugging Face tokens are stored privately as GitHub Actions secrets, not repository files.
 2. **API gate: integration passed:** Two non-confidential arithmetic evaluations settled, scores 100 and 0. API reported 880 credits; billing and underlying mechanism trace remain to be audited.
-3. **Ground-truth dataset:** Obtain 100+ appropriately licensed coding-agent task/candidate pairs with genuine official isolated-verifier logs and a frozen holdout, ideally from public SWE-bench Verified submissions after rights checks.
+3. **Ground-truth dataset:** First two source-locked coding pairs and archived upstream verifier labels scored; audit third-party harness evidence, then expand to a natural-outcome sample and frozen holdout with appropriate rights.
 4. **Baselines and results:** Collect fixed single-judge, uniform-ensemble and full-Reppo composite scores on the same candidates; audit score provenance and coverage.
 5. **Internal mechanism validation:** One Reppo engineer reviews `docs/ENGINEER_EXPORT_REQUEST.md`, gives pseudonymized primary/economic trace and snapshot exports, documents exact aggregation code/version, and enables a faithful same-input counterfactual. The current proxy is *not* sufficient.
 6. **Research release:** Researcher reviews independent labels, code, effect sizes, uncertainty, multiple comparisons, costs, leakage and ethical/rights issues. Publish dataset+code+Space only after that review. If the first result is null, publish it as null.
@@ -47,4 +47,4 @@
 
 ## Current execution blockers
 
-Remaining scientific blockers: independently verified coding-agent tasks and candidate patches, matched baseline scores, authentic full-system weighting/snapshot traces. Reppo engineering attests the two Judging Judges HTML reports are real; on-chain provenance was not independently verified.
+Remaining scientific blockers: reexecuted or independently audited verifier outcomes, larger samples representative of natural agent output, matched external judge baselines, authentic full-system weighting/snapshot traces. Reppo engineering attests the two Judging Judges HTML reports are real; on-chain provenance was not independently verified.

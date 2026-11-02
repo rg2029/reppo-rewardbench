@@ -14,7 +14,7 @@ size_categories:
 ---
 # Reppo RewardBench: API format examples
 
-This small dataset is for checking parsers and evaluation requests. **It is not a benchmark result.**
+This small dataset is for checking parsers and evaluation requests. **It is not a benchmark result.** The separate first two-task coding-agent feasibility run is [documented in GitHub](https://github.com/rg2029/reppo-rewardbench/blob/main/results/CODING_AGENT_FEASIBILITY_2026-11-02.md); these ten arithmetic examples are not its inputs.
 
 The file `data/smoke_preview.jsonl` has ten candidate answers drawn from five basic arithmetic questions, including one attempt to redirect an evaluator through the candidate text. The correctness fields were written for this fixture. They are not labels from an independent execution harness; the candidate answers are not coding-agent trajectories.
 
