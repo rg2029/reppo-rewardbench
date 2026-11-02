@@ -1,0 +1,14 @@
+{
+  "attempts": 0,
+  "fingerprint": "a679500d13ab2e3619653db9e8fb623fb6a270e8f1908b3276720337b78a6f1a",
+  "request": {
+    "candidate_hash": "b60f1310aad93326966c0a3201fcf440a7cf13989cb8d81042b42813460865e0",
+    "model": "Qwen/Qwen3-235B-A22B-Instruct-2507",
+    "request_version": "natural-50-v1-temp0-64tokens",
+    "rubric_hash": "2894188065d92e340727ec7382d1587f65c003fe8c31bcb9ff53f1743b90e3d8",
+    "source_hash": "558cf9d15114d33f6ebc5148235f51a87d0bfb33cc32aca70d7e1208e5a3f536"
+  },
+  "reserve_usd": "0.5",
+  "status": "RESERVED",
+  "study_id": "subjective-natural-50-fixed-judges-2026-11-02"
+}
