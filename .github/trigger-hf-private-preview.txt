@@ -1,1 +1,2 @@
 One-time approved private Hugging Face dataset and Space smoke-preview sync. This is not a public scientific release.
+Re-sync private Space after disabling SSR to resolve startup error; no public release. 2026-11-01.
