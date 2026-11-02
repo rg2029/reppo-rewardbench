@@ -1,0 +1,14 @@
+{
+  "attempts": 0,
+  "fingerprint": "ee41ffea6ffcac6fb1b0d6ea059e473cc3567fc637dbff00f7b7200486f0d64a",
+  "request": {
+    "candidate_hash": "61c26878875f83299a05b530ee0aa3b76f0d3b14e672180b7b1bce15ad97d8e0",
+    "model": "meta-llama/Llama-3.3-70B-Instruct",
+    "request_version": "natural-50-v1-temp0-64tokens",
+    "rubric_hash": "2894188065d92e340727ec7382d1587f65c003fe8c31bcb9ff53f1743b90e3d8",
+    "source_hash": "6655a6294c83d4d0a1b3184dad0ef2e75cd4204d7207a62824aaeff74134cf49"
+  },
+  "reserve_usd": "0.5",
+  "status": "RESERVED",
+  "study_id": "subjective-natural-50-fixed-judges-2026-11-02"
+}
