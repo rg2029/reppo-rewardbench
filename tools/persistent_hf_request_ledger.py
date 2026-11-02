@@ -11,7 +11,7 @@ import json
 import os
 from pathlib import Path
 import subprocess
-from tools.baseline_preflight_guard import request_fingerprint
+from tools.baseline_preflight_guard import request_fingerprint, amount
 
 ROOT = Path("research_ledger/hf_subjective_50")
 TERMINAL = {"SETTLED", "PARSE_ERROR", "RECONCILE"}
@@ -52,12 +52,12 @@ def persist(record, *, creating=False):
     # Non-fast-forward fails closed if another job claimed or updated the branch.
     git("push", "origin", "HEAD:refs/heads/main")
 
-def claim(request_fields, study_id, *, persist_fn=persist):
+def claim(request_fields, study_id, *, reserve_usd="0.50", persist_fn=persist):
     fingerprint = request_fingerprint(**request_fields)
     if ledger_file(fingerprint).exists():
         raise RuntimeError("Request already recorded; never retry")
     record = {"fingerprint": fingerprint, "study_id": study_id, "request": request_fields,
-              "status": "RESERVED", "attempts": 0}
+              "status": "RESERVED", "attempts": 0, "reserve_usd": str(amount(reserve_usd))}
     persist_fn(record, creating=True)
     return record
 
@@ -89,5 +89,5 @@ def inspect_history():
         row = json.loads(path.read_text(encoding="utf-8"))
         if row.get("fingerprint") != path.stem or row.get("status") not in STATES:
             raise RuntimeError("Malformed ledger record")
-        result.append({"fingerprint": row["fingerprint"], "status": row["status"]})
+        if "reserve_usd" not in row:\n            raise RuntimeError("Ledger reservation missing; fail closed")\n        result.append({"fingerprint": row["fingerprint"], "status": row["status"],\n                       "reserve_usd": str(amount(row["reserve_usd"]))})
     return result
