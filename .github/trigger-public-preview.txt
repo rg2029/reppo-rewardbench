@@ -5,3 +5,5 @@ Rerun: use current Hugging Face update_repo_settings() API. Dataset and Space co
 Editorial refresh: sync approved smoke-only dataset card and static research viewer. No new empirical claims or API spending. November 2026.
 
 2026-11-02: sync accurate exploratory coding-agent outcome (one tie, one wrong rank) to public HF Space and dataset card. No paid API actions.
+
+2026-11-02: retry preview sync after correcting strict research-disclosure string matching; same approved public metadata, no secret leaks or paid eval calls.
