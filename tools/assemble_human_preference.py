@@ -15,7 +15,7 @@ import urllib.request
 SOURCE="nvidia/HelpSteer2"
 REVISION="990b2711a36180dd19d9c94b8627844866f8982a"
 FILE="preference/preference.jsonl.gz"
-SPLIT="validation"
+SPLIT="val"  # Upstream preference JSONL uses val, not validation
 SEED="rewardbench-subjective-feasibility-v1-2026-11-02"
 MAX_ARCHIVE_BYTES=30000000
 TARGET_PER_STRATUM=3
