@@ -33,7 +33,7 @@ class NaturalBaselineManifestTests(unittest.TestCase):
         items[0]["candidates"][0]["answer"] += " altered"
         changed = make_manifest(items)
         self.assertNotEqual(previous[0]["fingerprint"], changed[0]["fingerprint"])
-        self.assertEqual(previous[1]["fingerprint"], changed[1]["fingerprint"])
+        self.assertEqual(previous[2]["fingerprint"], changed[2]["fingerprint"])
 
 if __name__ == "__main__":
     unittest.main()
