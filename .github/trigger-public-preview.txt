@@ -1,3 +1,5 @@
 Founder approved opening the Reppo RewardBench GitHub research preview to the public, and requested the Hugging Face dataset and Space be opened as clearly preliminary artifacts. One-time publication trigger. No internal HTML traces or experimental claims included.
 
 Rerun: use current Hugging Face update_repo_settings() API. Dataset and Space content already passed release checks.
+
+Editorial refresh: sync approved smoke-only dataset card and static research viewer. No new empirical claims or API spending. November 2026.
