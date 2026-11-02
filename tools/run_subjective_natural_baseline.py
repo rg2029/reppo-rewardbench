@@ -95,6 +95,10 @@ def main():
     for key in ("historic_confirmed_usd", "uncertain_prior_charges_usd", "incremental_pilot_usd"):
         if gate.get(key) is None:
             raise RuntimeError("Unknown costs: no authorization to execute")
+    historical_reservations = sum((amount(x["reserve_usd"]) for x in history), amount("0"))
+    current_reservation = amount(str(MODEL_RESERVE_USD)) * len(entries)
+    if historical_reservations + current_reservation > amount(gate["incremental_pilot_usd"]):
+        raise RuntimeError("Aggregate pilot reservations exceed incremental authorization")
     validate_offline_preflight(
         proposed=[e["request"] for e in entries], historical=history,
         frozen_input_hash=FROZEN_INPUT_HASH, observed_input_hash=inspected["input_sha256"],
