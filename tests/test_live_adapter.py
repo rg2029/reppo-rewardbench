@@ -52,6 +52,11 @@ class APIContractTests(unittest.TestCase):
         self.assertEqual(summary["evidence_basis"], "model-judgment")
         self.assertEqual(summary["credits_charged"], 100)
 
+    def test_reject_invalid_settlement_scores(self):
+        for value in (float('nan'), float('inf'), float('-inf'), True):
+            with self.subTest(value=value), self.assertRaisesRegex(ValueError, 'Malformed settled'):
+                summarize_settlement({'status':'SETTLED','result':{'verdict':{'score':value}}})
+
     def test_no_key_and_invalid_id(self):
         a = ReppoAdapter(api_key=" ")
         with self.assertRaises(ValueError):

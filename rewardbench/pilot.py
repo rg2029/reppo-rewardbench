@@ -72,7 +72,7 @@ def prepare(input_path: Path, run_dir: Path, max_candidates: int, public_approve
             if not isinstance(cid, str) or not cid or cid in ids:
                 raise ValueError("Missing/duplicate candidate id")
             ids.add(cid)
-            if candidate.get("verified_correct") not in (0, 1):
+            if type(candidate.get("verified_correct")) is not int or candidate["verified_correct"] not in (0, 1):
                 raise ValueError("Independently verified correctness must be 0/1")
             if not isinstance(candidate.get("answer"), str) or not candidate["answer"].strip():
                 raise ValueError("Missing candidate answer")

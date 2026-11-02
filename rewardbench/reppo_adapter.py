@@ -7,6 +7,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 import json
+import math
 import os
 from typing import Any, Callable, Optional
 from urllib import request, error
@@ -129,11 +130,13 @@ def summarize_settlement(response: dict) -> dict:
     result = response.get("result") or {}
     verdict = result.get("verdict") or {}
     score = verdict.get("score")
-    if not isinstance(score, (int, float)) or not 0 <= score <= 100:
+    if isinstance(score, bool) or not isinstance(score, (int, float)) or not math.isfinite(score) or not 0 <= score <= 100:
         raise ValueError("Malformed settled verdict score")
     assessments = response.get("peerAssessments") or []
     valid_scores = [p["score"] for p in assessments if isinstance(p, dict)
-                    and isinstance(p.get("score"), (int, float)) and 0 <= p["score"] <= 100]
+                    and not isinstance(p.get("score"), bool)
+                    and isinstance(p.get("score"), (int, float)) and math.isfinite(p["score"])
+                    and 0 <= p["score"] <= 100]
     evidence = result.get("evidence") or {}
     return {
         "status": "SETTLED", "score": float(score),

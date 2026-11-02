@@ -58,6 +58,14 @@ class PilotTests(unittest.TestCase):
     def tearDown(self):
         self.tmp.cleanup()
 
+    def test_pilot_rejects_boolean_correctness_labels(self):
+        row = json.loads(self.input.read_text().strip())
+        row['candidates'][0]['verified_correct'] = True
+        bad = self.root / 'bad.jsonl'
+        bad.write_text(json.dumps(row)+'\n')
+        with self.assertRaisesRegex(ValueError, 'correctness'):
+            prepare(bad, self.root / 'bad_run', 2, True)
+
     def test_preview_no_calls(self):
         submit_next(self.run_dir, 2, 0.44, False)
         s = load_state(self.run_dir)
