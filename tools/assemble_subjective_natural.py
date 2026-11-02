@@ -17,6 +17,8 @@ DATASET="nvidia/HelpSteer2"
 REVISION="990b2711a36180dd19d9c94b8627844866f8982a"
 SOURCE_FILE="preference/preference.jsonl.gz"
 SEED="reppo-rewardbench-subjective-natural-v1-2026-11-02"
+PILOT_SEED="rewardbench-subjective-feasibility-v2-2026-11-02"
+PILOT_FROZEN_IDS={"0111c604a63a9d1b","04cc0eeb163b4ce8","06f9b376120ce1b5"}
 N=50
 OUT=Path("runs/subjective-natural-preflight")
 SENSITIVE=[
@@ -35,6 +37,8 @@ def fetch(url):
     return data
 def key(row):
     return digest((SEED+":"+row["prompt"]+":"+row["response_1"]+":"+row["response_2"]).encode())
+def previously_scored_id(row):
+    return digest((PILOT_SEED+":"+row["prompt"]+":"+row["response_1"]+":"+row["response_2"]).encode())[:16]
 def main():
     OUT.mkdir(parents=True,exist_ok=False)
     metadata=json.loads(fetch("https://huggingface.co/api/datasets/"+DATASET))
@@ -49,6 +53,8 @@ def main():
     for row in rows:
         if row.get("split")!="val":
             continue
+        if previously_scored_id(row) in PILOT_FROZEN_IDS:
+            excluded["pilot_overlap"]+=1;continue
         strength=row.get("preference_strength")
         if type(strength) is not int or abs(strength)>3:
             excluded["invalid_label"]+=1;continue
@@ -96,7 +102,8 @@ def main():
               "limitations":["Sample is random over the filtered single-turn, length-limited validation pool—not all prompts.",
                              "Text-regex filtering cannot detect all sensitive or copyrighted content.",
                              "No judge model, verifier or Reppo API calls executed.",
-                             "Human labels are a reference standard with disagreement, not objective truth."]}
+                             "Human labels are a reference standard with disagreement, not objective truth.",
+                             "All three first-pilot pairs excluded by exact pinned source hashes before sample selection."]}
     (OUT/"manifest.json").write_text(json.dumps(manifest,sort_keys=True,indent=2)+"\n",encoding="utf-8")
     print("FROZEN 50-PREFERENCE SOURCE",json.dumps({
         "n":N,"eligible_frame_size":len(eligible),"strata":manifest["strata"],
