@@ -1,4 +1,4 @@
-name: Verify RewardBench static Space
+name: Verify public RewardBench Space
 on:
   push:
     paths:
@@ -17,7 +17,7 @@ jobs:
         with:
           python-version: '3.11'
       - run: python -m pip install 'huggingface_hub>=0.36,<2'
-      - name: Read private Space metadata
+      - name: Verify public Space and dataset
         run: |
           python - <<'PY'
           import os
@@ -35,7 +35,7 @@ jobs:
           print('requested_hardware:',getattr(rt,'requested_hardware',None))
           files=api.list_repo_files(repo_id=r,repo_type='space')
           print('static_index_exists:', 'index.html' in files)
-          assert ds.private and sp.private
+          assert not ds.private and not sp.private
           assert getattr(sp,'sdk',None)=='static'
           assert 'index.html' in files
           if getattr(rt,'stage',None) in ('BUILD_ERROR','RUNTIME_ERROR','CONFIG_ERROR'):
