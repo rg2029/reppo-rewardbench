@@ -1,5 +1,5 @@
 {
-  "attempts": 0,
+  "attempts": 1,
   "fingerprint": "4093035b8f3909ebfe20e3d0165562a79e8857ee76f6a2bf9a6a2747b81ed192",
   "request": {
     "candidate_hash": "4c0bdce12f01b669c3765f17234b8d5c89c6a3f040ddb25bb7cb5186030ff81d",
@@ -9,6 +9,6 @@
     "source_hash": "6655a6294c83d4d0a1b3184dad0ef2e75cd4204d7207a62824aaeff74134cf49"
   },
   "reserve_usd": "0.5",
-  "status": "RESERVED",
+  "status": "SUBMITTING",
   "study_id": "subjective-natural-50-fixed-judges-2026-11-02"
 }
