@@ -1,0 +1,1 @@
+Safe one-time retry of four-candidate coding-agent study following import-only failure before any network submissions. Fixed PYTHONPATH; 4 max submissions with conservative USD 0.88 reservation. Do not rerun this workflow after any submission. 2026-11-02.
