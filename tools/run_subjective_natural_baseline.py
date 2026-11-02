@@ -11,7 +11,7 @@ import os
 from pathlib import Path
 
 from tools.audit_frozen_subjective_50 import audit
-from tools.baseline_preflight_guard import validate_offline_preflight, request_fingerprint
+from tools.baseline_preflight_guard import validate_offline_preflight, request_fingerprint, amount
 from tools.persistent_hf_request_ledger import claim, transition, inspect_history
 from tools.run_subjective_external_baselines import (
     MODELS, MODEL_RESERVE_USD, MAX_OUT_TOKENS, catalog, fixed_prompt, submit_once
@@ -98,9 +98,9 @@ def main():
     validate_offline_preflight(
         proposed=[e["request"] for e in entries], historical=history,
         frozen_input_hash=FROZEN_INPUT_HASH, observed_input_hash=inspected["input_sha256"],
-        existing_spend_usd=gate["historic_confirmed_usd"],
+        existing_spend_usd=str(amount(gate["historic_confirmed_usd"]) + historical_reservations),
         uncertain_charges_usd=gate["uncertain_prior_charges_usd"],
-        new_reserve_usd=str(MODEL_RESERVE_USD * len(entries)),
+        new_reserve_usd=str(current_reservation),
         pilot_limit_usd=str(gate["incremental_pilot_usd"]), cumulative_limit_usd="500"
     )
     if float(gate["incremental_pilot_usd"]) > 25:
@@ -118,7 +118,7 @@ def main():
         if any(len(m["content"].encode("utf-8")) > 15000 for m in prompt):
             raise RuntimeError("Overlong request rejected")
         # Persistent global claim MUST reach remote main before POST.
-        record = claim(e["request"], STUDY_ID)
+        record = claim(e["request"], STUDY_ID, reserve_usd=str(MODEL_RESERVE_USD))
         record = transition(record, "SUBMITTING")
         try:
             answer = submit_once(e["model"], prompt, token) # ONE POST, NO RETRY
