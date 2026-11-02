@@ -1,4 +1,5 @@
 name: Freeze subjective human-preference pilot (no paid calls)
+# Stratified weak/strong sample; tie cases in separate benchmark
 on:
   push:
     paths:
