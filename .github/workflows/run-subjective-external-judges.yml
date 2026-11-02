@@ -1,0 +1,37 @@
+name: One-time external LLM judges subjective pilot
+on:
+  push:
+    paths:
+      - .github/workflows/run-subjective-external-judges.yml
+concurrency:
+  group: reppo-rewardbench-independent-judge-live
+  cancel-in-progress: false
+jobs:
+  two-external-judges:
+    if: github.repository == 'rg2029/reppo-rewardbench' && github.run_attempt == 1
+    runs-on: ubuntu-latest
+    timeout-minutes: 28
+    permissions:
+      contents: read
+    env:
+      HF_TOKEN: ${{ secrets.HF_TOKEN }}
+      PYTHONPATH: .
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Offline label-blind judge and cap regression tests
+        run: python -m unittest tests.test_subjective_external_baselines -v
+      - name: Freeze exact same pinned public-data human preference pairs
+        run: python tools/assemble_human_preference.py
+      - name: Score independently with two external fixed model families
+        run: python tools/run_subjective_external_baselines.py
+      - name: Preserve scores and ambiguity/parse failure checkpoints
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: external-subjective-pilot-evidence
+          path: runs/subjective-independent-judges-v1/
+          if-no-files-found: warn
+          retention-days: 90
