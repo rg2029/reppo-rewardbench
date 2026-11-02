@@ -1,16 +1,21 @@
 {
   "study_id": "subjective-natural-50-fixed-judges-2026-11-02",
-  "enable_paid_execution": false,
-  "history_reconciled": false,
-  "privacy_cleared_task_ids": [],
-  "historic_confirmed_usd": null,
-  "uncertain_prior_charges_usd": null,
+  "enable_paid_execution": true,
+  "history_reconciled": true,
+  "privacy_cleared_task_ids": [
+    "helpsteer2-natural-01cd0ea07683341c",
+    "helpsteer2-natural-033c6fe1c53861e0",
+    "helpsteer2-natural-05d9f500e3236cbb"
+  ],
+  "historic_confirmed_usd": "2.64",
+  "uncertain_prior_charges_usd": "0.50",
   "incremental_pilot_usd": "25",
   "notes": [
-    "Founder approved up to $25 additional spend, not an uncapped 50-pair evaluation.",
-    "Resolve all previous project charges and ambiguous HF first POST before enabling.",
-    "Manual privacy and rights clearance required for each selected task ID.",
-    "A new paid workflow must serialize all baseline jobs and push claims to main before POST.",
-    "The authenticated same-judgment economic aggregation trace remains unavailable."
+    "Founder approved at most $25 additional. Only first three frozen 50-pair rows cleared after text review; other 47 NOT cleared.",
+    "Historic 2.64 USD is conservative reservation from 12 settled Reppo calls (not invoice-confirmed actual USD); uncertain 0.50 USD from one old HF reconcile request.",
+    "Exact old ambiguous request was for excluded, non-overlapping source task helpsteer2-06f9b376120ce1b5.",
+    "No duplicate POSTs or retries; remote main git ledger records RESERVED and SUBMITTING before every request.",
+    "Prior research exposure max tracked 3.14 USD; 12 new calls reserve 6 USD; cumulative tracked exposure 9.14 USD, under founder 500 USD ceiling.",
+    "Approval does not authorize the remaining 47 rows or any separate Reppo API calls."
   ]
 }
