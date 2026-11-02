@@ -1,0 +1,43 @@
+name: Verify RewardBench static Space
+on:
+  push:
+    paths:
+      - .github/workflows/verify-hf-static.yml
+  workflow_dispatch:
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    timeout-minutes: 5
+    env:
+      HF_TOKEN: ${{ secrets.HF_TOKEN }}
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install 'huggingface_hub>=0.36,<2'
+      - name: Read private Space metadata
+        run: |
+          python - <<'PY'
+          import os
+          from huggingface_hub import HfApi
+          api=HfApi(token=os.environ['HF_TOKEN'])
+          r='Reppo-labs/reppo-rewardbench'
+          ds=api.repo_info(repo_id=r,repo_type='dataset')
+          sp=api.repo_info(repo_id=r,repo_type='space')
+          rt=api.get_space_runtime(r)
+          print('dataset_private:',ds.private)
+          print('space_private:',sp.private)
+          print('sdk:',getattr(sp,'sdk',None))
+          print('stage:',getattr(rt,'stage',None))
+          print('hardware:',getattr(rt,'hardware',None))
+          print('requested_hardware:',getattr(rt,'requested_hardware',None))
+          files=api.list_repo_files(repo_id=r,repo_type='space')
+          print('static_index_exists:', 'index.html' in files)
+          assert ds.private and sp.private
+          assert getattr(sp,'sdk',None)=='static'
+          assert 'index.html' in files
+          if getattr(rt,'stage',None) in ('BUILD_ERROR','RUNTIME_ERROR','CONFIG_ERROR'):
+              raise SystemExit('Static space still reports an error; inspect Hugging Face Space logs')
+          PY
