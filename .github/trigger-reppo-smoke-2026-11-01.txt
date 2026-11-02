@@ -1,0 +1,1 @@
+One-time authorized RewardBench API smoke experiment (2 calls max; $0.44 conservative cap). No recurring trigger. 2026-11-01.
