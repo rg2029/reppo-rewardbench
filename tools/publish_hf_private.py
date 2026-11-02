@@ -35,13 +35,13 @@ def main():
 
     folder = ROOT / "hf" / args.target
     names = sorted(p.name for p in folder.iterdir() if p.is_file())
-    allowed = {"README.md", "requirements.txt", "app.py"} if args.target == "space" else {"README.md"}
+    allowed = {"README.md", "requirements.txt", "app.py", "index.html"} if args.target == "space" else {"README.md"}
     if set(names) - allowed:
         raise SystemExit(f"Unexpected top-level files in {folder}: {set(names)-allowed}")
     if args.target == "dataset":
         allowed_deep = {"README.md", "data/smoke_preview.jsonl"}
     else:
-        allowed_deep = {"README.md", "app.py", "requirements.txt"}
+        allowed_deep = {"README.md", "app.py", "requirements.txt", "index.html"}
     present = {str(p.relative_to(folder)) for p in folder.rglob("*") if p.is_file()}
     if present != allowed_deep:
         raise SystemExit(f"Unexpected or missing files in {folder}: {present ^ allowed_deep}")
