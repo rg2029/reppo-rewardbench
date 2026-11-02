@@ -39,7 +39,7 @@ jobs:
             --labels runs/subjective-natural-preflight/human_labels.jsonl \
             --output runs/subjective-natural-preflight/offline_audit.json
       - name: Run independent baseline DRY RUN (no HF token, no POST)
-        run: python tools/run_subjective_natural_baseline.py
+        run: python -m tools.run_subjective_natural_baseline
       - name: Publish non-sensitive offline summary
         if: always()
         uses: actions/upload-artifact@v4
