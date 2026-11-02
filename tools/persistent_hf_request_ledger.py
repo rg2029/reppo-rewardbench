@@ -45,8 +45,7 @@ def persist(record, *, creating=False):
         raise RuntimeError("Missing existing claim; fail closed")
     destination.parent.mkdir(parents=True, exist_ok=True)
     temp = destination.with_suffix(".tmp")
-    temp.write_text(json.dumps(record, sort_keys=True, indent=2) + "
-", encoding="utf-8")
+    temp.write_text(json.dumps(record, sort_keys=True, indent=2) + "\n", encoding="utf-8")
     os.replace(temp, destination)
     git("add", "--", str(destination))
     git("commit", "-m", f"audit: reserve or record HF request {fingerprint[:12]} [{record['status']}]")
