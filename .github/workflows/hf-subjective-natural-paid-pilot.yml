@@ -2,10 +2,7 @@ name: One-time frozen natural subjective independent judge pilot
 # A change to the explicitly audited gate is the *only* trigger.
 # This workflow does NOT run on ledger commits, general code pushes, or reruns.
 on:
-  push:
-    branches: [main]
-    paths:
-      - research_controls/hf_subjective_50_gate.json
+  workflow_dispatch:
 permissions:
   contents: write
 concurrency:
@@ -13,7 +10,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   pilot:
-    if: github.run_attempt == 1
+    if: false # DISABLED after exploratory job 41438797939; no reruns
     runs-on: ubuntu-latest
     timeout-minutes: 40
     steps:
