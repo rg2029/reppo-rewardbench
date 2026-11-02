@@ -35,13 +35,14 @@ def submission(row, index):
     return data
 
 def analyze_pair(scores, human_strength, equivalence_margin=5):
-    if human_strength not in range(-3, 4):
+    if type(human_strength) is not int or human_strength not in range(-3, 4):
         raise ValueError("Invalid human label")
     if len(scores) != 2 or any(type(x) not in (int, float) or not 0 <= x <= 100 for x in scores):
         raise ValueError("Invalid scores")
-    difference = scores[0] - scores[1]
-    order = 0 if difference > 0 else 1 if difference < 0 else None
+    # NVIDIA source convention: negative prefers response_1; positive response_2.
+    difference = scores[1] - scores[0]
+    order = 1 if difference > 0 else 0 if difference < 0 else None
     stratum = "tie" if human_strength == 0 else "weak" if abs(human_strength) == 1 else "strong"
-    agreement = None if human_strength == 0 else (0.5 if order is None else float(order == (0 if human_strength > 0 else 1)))
+    agreement = None if human_strength == 0 else (0.5 if order is None else float(order == (1 if human_strength > 0 else 0)))
     return {"stratum": stratum, "margin": abs(difference), "equivalent": abs(difference) <= equivalence_margin,
             "predicted_index": order, "strict_agreement": agreement}
