@@ -1,0 +1,40 @@
+name: One-time live coding-agent Reppo feasibility pilot
+on:
+  push:
+    paths:
+      - .github/trigger-coding-agent-pilot.txt
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: reppo-paid-coding-pilot-2026-11-02
+  cancel-in-progress: false
+jobs:
+  four-reppo-evaluations:
+    if: github.repository == 'rg2029/reppo-rewardbench' && github.run_attempt == 1
+    runs-on: ubuntu-latest
+    timeout-minutes: 110
+    env:
+      REPPO_API_KEY: ${{ secrets.REPPO_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Retrieve frozen independent verifier manifests
+        uses: actions/download-artifact@v4
+        with:
+          name: coding-agent-candidate-preflight
+          run-id: 41371862402
+          github-token: ${{ github.token }}
+          path: source-preflight
+      - name: Run four sequential Reppo evaluations, fail closed
+        run: python tools/run_coding_pilot.py
+      - name: Save evidence and checkpoints even if evaluation is incomplete
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coding-agent-live-results
+          path: runs/coding-agent-v1/
+          if-no-files-found: warn
+          retention-days: 60
