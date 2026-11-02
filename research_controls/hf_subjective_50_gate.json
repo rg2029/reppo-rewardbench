@@ -16,6 +16,7 @@
     "Exact old ambiguous request was for excluded, non-overlapping source task helpsteer2-06f9b376120ce1b5.",
     "No duplicate POSTs or retries; remote main git ledger records RESERVED and SUBMITTING before every request.",
     "Prior research exposure max tracked 3.14 USD; 12 new calls reserve 6 USD; cumulative tracked exposure 9.14 USD, under founder 500 USD ceiling.",
-    "Approval does not authorize the remaining 47 rows or any separate Reppo API calls."
+    "Approval does not authorize the remaining 47 rows or any separate Reppo API calls.",
+    "2026-11-02: earlier new-cohort workflow 41438045214 stopped at preflight NameError before any POST; corrected code and full paid-gate dry run 41438642527 passed. This change triggers a distinct first-attempt workflow; NEVER retry any submitted request."
   ]
 }
