@@ -1,0 +1,54 @@
+name: One-time frozen natural subjective independent judge pilot
+# A change to the explicitly audited gate is the *only* trigger.
+# This workflow does NOT run on ledger commits, general code pushes, or reruns.
+on:
+  push:
+    branches: [main]
+    paths:
+      - research_controls/hf_subjective_50_gate.json
+permissions:
+  contents: write
+concurrency:
+  group: rewardbench-hf-subjective-natural-paid-exclusive
+  cancel-in-progress: false
+jobs:
+  pilot:
+    if: github.run_attempt == 1
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Validate offline tests before any provider traffic
+        run: |
+          python -m unittest tests.test_baseline_preflight_guard tests.test_frozen_subjective_50_audit tests.test_persistent_hf_request_ledger tests.test_subjective_natural_baseline_manifest tests.test_analyze_subjective_baselines_offline -v
+      - name: Regenerate exact frozen source using public GET only
+        run: python tools/assemble_subjective_natural.py
+      - name: Verify both immutable frozen input and label hashes
+        run: |
+          python tools/audit_frozen_subjective_50.py \
+            --inputs runs/subjective-natural-preflight/judge_inputs.jsonl \
+            --labels runs/subjective-natural-preflight/human_labels.jsonl \
+            --output runs/subjective-natural-preflight/offline_audit.json
+      - name: Configure audit-only commit identity
+        run: |
+          git config user.name 'reppo-rewardbench-audit-bot'
+          git config user.email '168122494+rg2029@users.noreply.github.com'
+      - name: Run exactly three preregistered pairs, never retry POST
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: python -m tools.run_subjective_natural_baseline --paid
+      - name: Archive only aggregate execution status (no inputs, labels, credentials)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: natural-50-fixed-judges-pilot-summary
+          path: runs/subjective-natural-fixed-judges/preflight_summary.json
+          if-no-files-found: warn
+          retention-days: 90
