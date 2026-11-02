@@ -63,6 +63,7 @@ def write_summary(payload):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--paid", action="store_true", help="Requires independently completed gate")
+    parser.add_argument("--check-paid-gate-only", action="store_true", help="Validate paid gates without token or POST")
     args = parser.parse_args()
     inspected = audit(DATA / "judge_inputs.jsonl", DATA / "human_labels.jsonl")
     raw = [json.loads(x) for x in (DATA / "judge_inputs.jsonl").read_text(encoding="utf-8").splitlines()]
@@ -79,7 +80,7 @@ def main():
                         fromlist=["canonical_hash"]).canonical_hash([e["fingerprint"] for e in entries]),
                "historical_ledger_entries": len(history), "mode": "PAID" if args.paid else "DRY_RUN",
                "status": "NOT_EXECUTED"}
-    if not args.paid:
+    if not args.paid and not args.check_paid_gate_only:
         summary["reason"] = "Offline structural validation only; no model or billing requests"
         write_summary(summary)
         print(json.dumps(summary, sort_keys=True))
@@ -109,6 +110,11 @@ def main():
     )
     if float(gate["incremental_pilot_usd"]) > 25:
         raise RuntimeError("Pilot authorization capped at $25 additional")
+    if args.check_paid_gate_only:
+        summary["status"] = "PAID_GATES_VALIDATED_WITHOUT_API_REQUEST"
+        write_summary(summary)
+        print(json.dumps(summary, sort_keys=True))
+        return
     token = os.environ.get("HF_TOKEN")
     if not token:
         raise RuntimeError("HF_TOKEN unavailable")
