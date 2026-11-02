@@ -9,7 +9,7 @@ pinned: false
 ---
 # Reppo RewardBench — research preview
 
-This is a browser-only, reproducibility-first study report inspector. The Space is a **private smoke-test preview** with **no independently validated benchmark performance claims**.
+This is a browser-only, reproducibility-first study report inspector. The Space is an **open research preview** with **no independently validated benchmark performance claims**.
 
 It uses Hugging Face Static Spaces, with no backend compute, credentials, API billing, or model inference. Drop an offline RewardBench `report.json` into the viewer to inspect method coverage and task-macro accuracy. The report stays in the local browser.
 
