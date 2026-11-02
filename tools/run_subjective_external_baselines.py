@@ -93,6 +93,7 @@ def submit_once(model,messages,token):
             "usage":body.get("usage"),"score_text":raw}
 
 def main():
+    raise RuntimeError("LEGACY PAID WORKFLOW DISABLED: ambiguous prior POST and cross-run duplicate risk. Use a separately audited, frozen 50-pair workflow; do not rerun.")
     if os.getenv("GITHUB_RUN_ATTEMPT")!="1" or not os.getenv("GITHUB_RUN_ID"):
         raise RuntimeError("Cannot run outside one-time GitHub Actions context or rerun paid baseline")
     token=os.getenv("HF_TOKEN")
