@@ -64,7 +64,7 @@ jobs:
           space_card = (root / "space/README.md").read_text()
           space_html = (root / "space/index.html").read_text()
           if ("not a benchmark result" not in dataset_card.lower()
-                  or "not a validated benchmark leaderboard" not in space_card.lower()
+                  or "does not run model inference or host a validated benchmark leaderboard" not in space_card.lower()
                   or "does not establish comparative accuracy" not in space_html.lower()):
               raise SystemExit("Missing scientific limitation disclosures; refusing publication.")
           records = [json.loads(line) for line in (root / "dataset/data/smoke_preview.jsonl").read_text().splitlines() if line.strip()]
