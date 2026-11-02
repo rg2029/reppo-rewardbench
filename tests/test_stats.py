@@ -10,6 +10,11 @@ class StatsTests(unittest.TestCase):
         self.assertEqual(a['delta_mean'], .5)
         self.assertEqual(a['bootstrap_95_ci'], [.5, .5])
 
+    def test_nonfinite_inputs_rejected(self):
+        for value in (float('nan'), float('inf'), float('-inf'), True):
+            with self.subTest(value=value), self.assertRaises(ValueError):
+                paired_bootstrap_delta([(value, 0.5), (0.5, 0.5)])
+
     def test_insufficient_data_and_invalid(self):
         self.assertIsNone(paired_bootstrap_delta([(1.0, 0.0)]))
         with self.assertRaises(ValueError):

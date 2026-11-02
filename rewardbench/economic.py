@@ -10,6 +10,7 @@ import argparse
 from collections import defaultdict
 import hashlib
 import json
+import math
 from pathlib import Path
 from rewardbench.research import read_jsonl
 
@@ -28,7 +29,7 @@ def build_weight_proxy(peer_rows: list[dict]) -> list[dict]:
         score, weight = row.get('score'), row.get('economic_weight')
         if isinstance(score, bool) or isinstance(weight, bool) or not all(isinstance(v, (int,float)) for v in (score, weight)):
             raise ValueError('Peer score and economic weight must be numeric')
-        if not 0 <= score <= 100 or not 0 < weight < float('inf'):
+        if not math.isfinite(score) or not math.isfinite(weight) or not 0 <= score <= 100 or not 0 < weight:
             raise ValueError('Peer score or weight out of range')
         if not row.get('export_id') or not row.get('weight_definition'):
             raise ValueError('Missing protocol export provenance / weight definition')

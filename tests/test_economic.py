@@ -29,6 +29,13 @@ class EconTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'out of range'):
             build_weight_proxy(rows)
 
+    def test_nonfinite_peer_scores_and_weights_rejected(self):
+        for field in ('score', 'economic_weight'):
+            for value in (float('nan'), float('inf'), float('-inf')):
+                rows=case();rows[0][field]=value
+                with self.subTest(field=field, value=value), self.assertRaisesRegex(ValueError, 'out of range'):
+                    build_weight_proxy(rows)
+
     def test_duplicate_blocked(self):
         with self.assertRaisesRegex(ValueError,'Duplicate'):
             build_weight_proxy(case()+case()[:1])

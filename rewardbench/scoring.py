@@ -1,4 +1,5 @@
 from collections import Counter
+import math
 from typing import Optional
 
 
@@ -21,8 +22,10 @@ def pairwise_ranking_accuracy(scores: list[float], outcomes: list[int]) -> Optio
     """
     if len(scores) != len(outcomes):
         raise ValueError("scores and outcomes lengths differ")
-    if any(y not in (0, 1) for y in outcomes):
-        raise ValueError("outcomes must be binary 0/1")
+    if any(type(y) is not int or y not in (0, 1) for y in outcomes):
+        raise ValueError("outcomes must be binary integer 0/1")
+    if any(isinstance(s, bool) or not isinstance(s, (int, float)) or not math.isfinite(s) for s in scores):
+        raise ValueError("scores must be finite numbers, not booleans")
     n = 0
     total = 0.0
     for i in range(len(scores)):
