@@ -16,10 +16,10 @@ SOURCE="nvidia/HelpSteer2"
 REVISION="990b2711a36180dd19d9c94b8627844866f8982a"
 FILE="preference/preference.jsonl.gz"
 SPLIT="val"  # Upstream preference JSONL uses val, not validation
-SEED="rewardbench-subjective-feasibility-v1-2026-11-02"
+SEED="rewardbench-subjective-feasibility-v2-2026-11-02"
 MAX_ARCHIVE_BYTES=30000000
-TARGET_PER_STRATUM=3
-STRATA={"weak":lambda x:abs(x)==1,"strong":lambda x:abs(x)>=2}
+TARGET_PER_STRATUM=2
+STRATA={"tie":lambda x:x==0,"weak":lambda x:abs(x)==1,"strong":lambda x:abs(x)>=2}
 SENSITIVE=(re.compile(r"\b[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}\b"),
            re.compile(r"\b(?:\+?\d[\d \-.()]{8,}\d)\b"))
 def sha(b):return hashlib.sha256(b).hexdigest()
@@ -85,12 +85,12 @@ def main():
     inputs.write_text("".join(json.dumps(r,sort_keys=True,ensure_ascii=False)+"\n" for r in judges),encoding="utf-8")
     truth.write_text("".join(json.dumps(r,sort_keys=True,ensure_ascii=False)+"\n" for r in labels),encoding="utf-8")
     manifest={"dataset":SOURCE,"source_file":FILE,"revision":REVISION,"raw_archive_sha256":sha(blob),
-        "source_split":SPLIT,"selection_seed":SEED,"selection":"three each weak (+/-1), strong (+/-2 or 3), SHA-sorted with public-text and size filters; ties are assessed separately via RewardBench 2 Ties",
+        "source_split":SPLIT,"selection_seed":SEED,"selection":"two each ties (0), weak (+/-1), strong (+/-2 or 3), SHA-sorted with public-text and size filters; natural-prevalence sample follows separately",
         "source_rows_by_split":dict(counts[0]),"eligible_validation_by_strength":dict(counts[1]),
         "selected_by_stratum":dict(collections.Counter(x["stratum"] for x in labels)),
         "judge_inputs_sha256":sha(inputs.read_bytes()),"human_labels_sha256":sha(truth.read_bytes()),
         "notes":["Labels are separate from the judge-facing file and must never be sent in API requests.",
-                 "Stratified weak/strong pilot is NOT representative. Inter-rater disagreements are separately retained; source contains insufficient tied validation examples.",
+                 "Stratified tie/weak/strong pilot is NOT representative. Inter-rater disagreements are separately retained, and no single subjective gold label is considered objective truth.",
                  "Dataset is CC BY 4.0; third-party model and user content rights/privacy require review before live use.",
                  "This script does not call Reppo or other paid APIs."]}
     (out/"manifest.json").write_text(json.dumps(manifest,sort_keys=True,indent=2)+"\n",encoding="utf-8")
