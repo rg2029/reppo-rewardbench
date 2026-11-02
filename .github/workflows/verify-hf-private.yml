@@ -38,5 +38,11 @@ jobs:
           stage=getattr(runtime,'stage',None)
           print('Space build/runtime stage:',stage or 'not yet reported')
           if stage in {'BUILD_ERROR', 'RUNTIME_ERROR', 'CONFIG_ERROR'}:
+              import re
+              print("Last 35 Space runtime log lines:")
+              log_lines = list(api.fetch_space_logs(repo_id=repo, follow=False))
+              for line in log_lines[-35:]:
+                  clean = re.sub(r'(?:hf|rk)_[A-Za-z0-9]{15,}', '[REDACTED]', str(line))
+                  print(clean[:600])
               raise SystemExit('Space requires a build fix; see HF Space logs')
           PY
