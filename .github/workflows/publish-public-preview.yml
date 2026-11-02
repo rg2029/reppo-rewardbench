@@ -1,0 +1,98 @@
+name: Publish open RewardBench research preview
+on:
+  push:
+    paths:
+      - .github/trigger-public-preview.txt
+jobs:
+  publish-preview:
+    if: github.repository == 'rg2029/reppo-rewardbench'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    env:
+      HF_TOKEN: ${{ secrets.HF_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install Hugging Face uploader
+        run: python -m pip install 'huggingface_hub>=0.36,<2'
+      - name: Publish reviewed preview and verify public access
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import re
+          from pathlib import Path
+          from urllib.request import Request, urlopen
+          from huggingface_hub import HfApi
+
+          repo = "Reppo-labs/reppo-rewardbench"
+          gitrepo = "rg2029/reppo-rewardbench"
+          token = os.environ.get("HF_TOKEN")
+          if not token:
+              raise SystemExit("Missing HF_TOKEN; publication blocked.")
+          req = Request("https://api.github.com/repos/" + gitrepo,
+                        headers={"Accept": "application/vnd.github+json", "User-Agent": "Reppo-RewardBench-release"})
+          with urlopen(req, timeout=20) as response:
+              github = json.load(response)
+          if github.get("private") or github.get("full_name") != gitrepo:
+              raise SystemExit("The source repository is not publicly visible; refusing release.")
+
+          root = Path("hf")
+          sets = {
+              "dataset": {"README.md", "data/smoke_preview.jsonl"},
+              "space": {"README.md", "index.html", "app.py", "requirements.txt"},
+          }
+          for kind, expected in sets.items():
+              folder = root / kind
+              actual = {str(p.relative_to(folder)) for p in folder.rglob("*") if p.is_file()}
+              if actual != expected:
+                  raise SystemExit(f"Unexpected {kind} release contents; refusing release: {actual ^ expected}")
+              for path in folder.rglob("*"):
+                  if path.is_file():
+                      contents = path.read_text(encoding="utf-8")
+                      for pat in (r"rk_[0-9a-fA-F]{30,}", r"hf_[a-zA-Z0-9]{20,}",
+                                  r"gh[pousr]_[a-zA-Z0-9]{20,}", r"-----BEGIN (?:OPENSSH|RSA|EC) PRIVATE KEY"):
+                          if re.search(pat, contents):
+                              raise SystemExit(f"Potential credential found in {kind}; refusing publication.")
+
+          dataset_card = (root / "dataset/README.md").read_text()
+          space_card = (root / "space/README.md").read_text()
+          space_html = (root / "space/index.html").read_text()
+          if ("No publishable scientific results" not in dataset_card
+                  or "no independently validated benchmark performance claims" not in space_card
+                  or "Scientific status: not established" not in space_html):
+              raise SystemExit("Missing scientific limitation disclosures; refusing publication.")
+          records = [json.loads(line) for line in (root / "dataset/data/smoke_preview.jsonl").read_text().splitlines() if line.strip()]
+          if len(records) != 10 or any(row.get("split") != "smoke" for row in records):
+              raise SystemExit("Unexpected dataset; only 10 smoke-preview rows are approved.")
+
+          api = HfApi(token=token)
+          for kind in ("dataset", "space"):
+              info = api.repo_info(repo_id=repo, repo_type=kind)
+              if kind == "space" and info.sdk != "static":
+                  raise SystemExit("Space not configured as static hosting; refusing release.")
+              print(f"Validated existing {kind} repo. Current private status: {info.private}", flush=True)
+          for kind in ("dataset", "space"):
+              api.upload_folder(repo_id=repo, repo_type=kind, folder_path=str(root/kind),
+                                commit_message="Open RewardBench research preview — smoke data only")
+              print(f"Uploaded vetted {kind} preview.", flush=True)
+          for kind in ("dataset", "space"):
+              info = api.repo_info(repo_id=repo, repo_type=kind)
+              if info.private:
+                  api.update_repo_visibility(repo_id=repo, repo_type=kind, private=False)
+              confirmed = api.repo_info(repo_id=repo, repo_type=kind)
+              if confirmed.private:
+                  raise SystemExit(f"{kind} could not be made public; resolve permissions.")
+              print(f"PUBLIC: https://huggingface.co/{'datasets/' if kind=='dataset' else 'spaces/'}{repo}", flush=True)
+
+          runtime = api.get_space_runtime(repo)
+          print("Space runtime stage:", runtime.stage)
+          if runtime.stage in ("RUNTIME_ERROR", "BUILD_ERROR", "CONFIG_ERROR"):
+              raise SystemExit("Space made public, but runtime failed; inspect Space logs.")
+          print("Preview published. No benchmark effect size or RL improvement is established.")
+          PY
