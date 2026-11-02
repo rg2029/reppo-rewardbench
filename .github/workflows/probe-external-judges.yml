@@ -1,0 +1,42 @@
+name: Check independent LLM judge availability (no inference)
+on:
+  push:
+    paths:
+      - .github/workflows/probe-external-judges.yml
+jobs:
+  inspect:
+    if: github.repository == 'rg2029/reppo-rewardbench'
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    permissions:
+      contents: read
+    env:
+      HF_TOKEN: ${{ secrets.HF_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Read provider model catalog only; no paid or inference calls
+        run: |
+          python - <<'PY'
+          import json,os,urllib.request,urllib.error
+          token=os.environ.get('HF_TOKEN')
+          if not token:raise SystemExit('Missing HF_TOKEN; independent judge connection unavailable.')
+          url='https://router.huggingface.co/v1/models'
+          req=urllib.request.Request(url,headers={'Authorization':'Bearer '+token,
+             'Accept':'application/json','User-Agent':'Reppo-RewardBench-model-catalog/0.1'})
+          try:
+              with urllib.request.urlopen(req,timeout=20) as rsp:
+                  data=json.load(rsp)
+          except urllib.error.HTTPError as ex:
+              print('Model catalog HTTP status',ex.code,'(no model calls).')
+              if ex.code in (401,403):raise SystemExit('HF token lacks Inference Providers permission; request a fine-grained inference-enabled token.')
+              raise
+          models=data.get('data',[]) if isinstance(data,dict) else []
+          names=sorted(str(m.get('id','')) for m in models if isinstance(m,dict))
+          prefixes=('Qwen/Qwen3','meta-llama/Llama','mistralai/Mistral','google/gemma','openai/gpt-oss')
+          available=[n for n in names if n.startswith(prefixes)]
+          print('Model catalog accessible. Model count:',len(names),'; relevant models:',available[:40])
+          print('No prompt submitted. No model inference. No paid API call.')
+          PY
