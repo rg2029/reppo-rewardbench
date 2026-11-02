@@ -1,9 +1,9 @@
 # RewardBench Protocol v0.2 — preregistration draft
 
 **Date:** 2026-11-01  
-**Team:** Reppo Labs (three-person startup)  
+**Research organization:** Reppo Labs  
 **Maximum planned experimental spend:** USD 500  
-**Status:** Design and CPU-only scaffold; no empirical findings yet.
+**Status:** Protocol under revision. The arithmetic API smoke check completed; the separate coding-agent pilot is not yet included as evidence.
 
 ## Question and falsifiable hypotheses
 
@@ -13,9 +13,9 @@
 
 No hypothesis is presumed true. Directional results, null results and confidence intervals must be reported.
 
-## Why staged
+## Order of experiments
 
-Published TTRL reproduction uses eight 80GB A100 GPUs (PRIME-RL/TTRL README). A faithful full reproduction is outside this budget. Start with reward validation, then a small actual weight-update study only if feasibility and spend gates pass. We will not represent reranking as RL.
+We will check reward rankings against task outcomes before attempting an experiment with model-weight updates. Inference-time selection, offline preference training and online RL are distinct interventions; evidence for one does not establish results for another.
 
 ## Task construction
 
@@ -64,7 +64,3 @@ Gate 3: after >=100 tasks, H1 effect direction, CI, error audit, and cost-effici
 ## Deliverables
 
 Source-controlled protocol, dataset cards, scoring harness, adapter, CSV/JSONL logs, statistical analysis, a negative/positive-results-neutral report, and (only if real weight updates executed) RL training/evaluation artifact. Publication or outreach requires human technical review.
-
-## Compute access limitation — proposed disclosure
-
-> Reppo Labs is a three-person startup without dedicated access to an eight-A100 GPU cluster. Accordingly, this pilot does not claim to replicate full-scale TTRL results. We evaluate reward quality under a fixed, constrained budget and report any subsequent small-scale policy-optimization results separately. The resulting conclusions are bounded by task domain, model size, and compute budget.

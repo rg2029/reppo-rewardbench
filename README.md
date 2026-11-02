@@ -1,47 +1,46 @@
 # Reppo RewardBench
 
-**Can economically coordinated evaluators produce better reward signals for coding agents than conventional LLM judges?**
+**Can a network of evaluators distinguish an agent that succeeded from one that only sounded convincing?**
 
-Reppo RewardBench is an open research project from Reppo Labs. We are testing a specific claim, not assuming it: when model outputs are judged by multiple evaluators whose influence is shaped by economic feedback, do the resulting rewards better predict independently verified success?
+A patch may look correct and fail its tests. A tool call may be well-formed but change the wrong record. In both cases an LLM judge could give a favorable score. Reppo RewardBench studies this gap between *judged quality* and *checked outcomes*.
 
-The immediate outcome is **reward-ranking accuracy**. Whether those rewards actually improve model learning is a separate, later experiment.
+The central comparison is between a fixed single judge, an independently assembled equal-weight ensemble, and the complete [Reppo Evaluation API](https://docs.reppo.ai/api/eval/overview). We rank the same agent outputs against results checked by a task-specific verifier. A second analysis will test whether economic weighting helps, using the same underlying evaluator judgments. The two questions must not be conflated.
 
-[Research protocol](docs/PROTOCOL.md) · [Current results](docs/LIVE_SMOKE_RESULT_2026-11-01.md) · [Mechanism](docs/MECHANISM_SPEC.md) · [Dataset](https://huggingface.co/datasets/Reppo-labs/reppo-rewardbench) · [Interactive viewer](https://huggingface.co/spaces/Reppo-labs/reppo-rewardbench)
+[Protocol](docs/PROTOCOL.md) · [Mechanism and open questions](docs/MECHANISM_SPEC.md) · [Public dataset](https://huggingface.co/datasets/Reppo-labs/reppo-rewardbench) · [Report viewer](https://huggingface.co/spaces/Reppo-labs/reppo-rewardbench)
 
-## What we know so far
+## Evidence at this stage
 
-| Evidence | Observation | What it does not show |
+| Check | Observed | Limit |
 | --- | --- | --- |
-| Live Eval API smoke test, 1 arithmetic task / 2 submissions | Correct answer scored **100/100**; incorrect answer **0/100**. Both settled. Equal-weight peer scores also ranked them correctly. | Any advantage over a conventional judge; coding-agent performance; RL improvement. |
-| Two engineer-attested real evaluation reports (October 29, 2026) | Four primary evaluators and five veREPPO voters per report. **40/40 allocations** reconcile to the displayed voting totals. | Independent verification of network events or whether the economic votes improve judgment quality. |
-| A simple one-voter-one-vote normalization of those two reports | **Same selected evaluator** as the recorded stake-weighted totals in both cases. | A benefit or failure of economic weighting in general. Two cases are not a benchmark. |
+| Live Eval API smoke test | Two settled evaluations on one arithmetic prompt. The correct answer scored 100/100, the wrong answer 0/100; the peer mean also ranked them correctly. | An integration check, not a comparison of competing judges. |
+| Two real voting reports, confirmed by Reppo engineering | Four evaluators, five veREPPO voters per report; all 40 recorded allocations reconcile to the displayed totals. | Original network events have not been independently authenticated. |
+| Equal-voter normalization of those reports | Neither report changed its selected evaluator. | These examples do not show an advantage from stake weighting. |
 
-The two original report HTML files are not redistributed here pending review of their publication rights. [Audit method and limitations](docs/PRIVATE_FIRST_MECHANISM_AUDIT.md) · [Read-only parser](tools/audit_judging_judges.py). Reppo engineering confirmed that the reports are real, but their event-level provenance has not been independently authenticated.
+The original voting HTML files remain out of public distribution pending review of their contents and redistribution rights. See the [arithmetic audit](docs/PRIVATE_FIRST_MECHANISM_AUDIT.md), [replay parser](tools/audit_judging_judges.py), and [API smoke result](docs/LIVE_SMOKE_RESULT_2026-11-01.md).
 
-**There are no independently test-verified coding-agent results in this release. There has been no model training or inference-time RL experiment.** The current Hugging Face dataset is a small, authored integration fixture, not an evaluation leaderboard.
+**No matched coding-agent result or reinforcement-learning improvement has been established in this release.** The Hugging Face dataset currently contains ten basic arithmetic *format examples*. They are not benchmark tasks.
 
-## The experiment
+## How we'll test it
 
-We will use a frozen set of coding tasks, each with at least one passing and one failing candidate patch. Candidate outcomes must come from a real, independently run test harness—not an LLM's opinion of whether the code looks right.
+Each task has two or more real agent-generated outputs and a recorded outcome from an independent checker. For coding, that means executable patch tests. We are also designing tracks for tool-call validity, customer-service state changes, and research tasks with checkable answers. Security stress tests are analyzed separately; each domain keeps its own metric and denominator.
 
-Each candidate will be evaluated under three matched conditions:
+For each candidate we collect:
 
-1. **Single judge:** one fixed LLM, prompt and scoring rubric.
-2. **Uniform ensemble:** multiple fixed judges, with equal aggregation.
-3. **Reppo:** the complete Eval API result, including its primary evaluators, secondary veREPPO feedback and any applicable Datanet signal.
+1. A score from one fixed external LLM judge.
+2. Scores from an external, uniformly weighted judge ensemble.
+3. The final settled score from the Reppo Evaluation API.
 
-The primary metric is **task-macro pairwise ranking accuracy**: how often a method ranks the verified passing candidate above the failing candidate, averaged across tasks. We report ties, missing results, costs, task-level uncertainty and every failed evaluation. All comparisons use the same tasks and candidate outputs.
+We compare rankings on the **same tasks and candidate presentations**. Task-macro pairwise accuracy is the primary measure; ties count as half a correct ranking. Every release should also show failed requests, missing scores, costs, latencies, and task-level uncertainty. A higher composite score alone would not identify which part of Reppo caused the difference.
 
-A Reppo-versus-ensemble difference **cannot by itself establish that economic weighting caused the difference**. That requires a separate same-judgments replay, with the actual aggregation inputs and economic weights held or changed under explicit controls. See [protocol](docs/PROTOCOL.md) and [data needed for the replay](docs/ENGINEER_EXPORT_REQUEST.md).
+Testing *economic weighting* requires a separate replay using the same judges, evidence, and aggregation function, changing only the weights. Testing *learning* requires a separate experiment that actually updates model parameters. We won't describe reranking as reinforcement learning.
 
-## Run the tools
+## Reproduce the offline checks
 
-The offline code uses Python 3.10+ and the standard library. No API key, GPU or paid model is needed to run the tests.
+Python 3.10+ and the standard library are sufficient for the regression tests and the simulated analysis example.
 
 ```bash
 python -m unittest discover -s tests -v
 
-# Build and score a clearly simulated study, to check the analysis pipeline.
 python tools/build_study_demo.py
 python -m rewardbench.research \
   --tasks examples/study_smoke_tasks.jsonl \
@@ -50,32 +49,15 @@ python -m rewardbench.research \
   --out runs/demo-only/report.json
 ```
 
-The command above produces **synthetic data only**. Do not quote its scores as findings.
-
-To check the vote arithmetic in any approved `Judging Judges Report` HTML exports:
+The example above is **simulated**. Its scores are not evidence. To audit the voting arithmetic in two permitted HTML reports:
 
 ```bash
 python tools/audit_judging_judges.py report-1.html report-2.html \
   --output runs/private/vote_audit.json
 ```
 
-That parser checks the report's displayed numbers. It does not query the blockchain or validate the final reward computation.
+The parser checks displayed allocations; it does not authenticate on-chain events or reconstruct the production reward score. The CPU test workflow makes no paid API calls. Live evaluations run separately with request caps, saved checkpoints, and secure secrets.
 
-For real scoring, start with [the study input format](docs/SWEBENCH_BRIDGE.md), [API contract](docs/API_CONTRACT.md) and [checkpointed pilot runner](rewardbench/pilot.py). The API is asynchronous; never retry an ambiguous submission blindly or put keys in source files. **No paid calls run in CI.**
+[Study inputs](docs/SWEBENCH_BRIDGE.md) · [API contract](docs/API_CONTRACT.md) · [Research release gates](docs/RESEARCH_RELEASE_GATES.md) · [License](LICENSE)
 
-## Repository map
-
-- `rewardbench/`: API adapter, dataset checks, scoring, matched comparisons, bootstrap statistics and limited vote-replay tools.
-- `tests/`: CPU-only regression tests, run by [GitHub Actions](.github/workflows/cpu-tests.yml).
-- `docs/PROTOCOL.md`: study design, controls, endpoints and limits.
-- `docs/MECHANISM_SPEC.md`: what is documented about Reppo's integrated mechanism, and what remains unverified.
-- `docs/PRIVATE_FIRST_MECHANISM_AUDIT.md`: two real, engineer-attested case reports, their arithmetic checks and limits.
-- `hf/`: public Hugging Face dataset preview and static report viewer. No private traces are included.
-
-## What would count as a meaningful result?
-
-The next milestone is a small set of **independently verified coding-agent candidates** scored by all three methods, with the raw task provenance and matched comparison available for scrutiny. After that: a larger sealed holdout, a faithful economic-weighting ablation, and—only if justified—a separate learning experiment with actual model updates.
-
-The study protocol includes null results, failure modes and the data needed to reproduce each comparison.
-
-[Release gates and limitations](docs/RESEARCH_RELEASE_GATES.md) · [Live API smoke-test record](docs/LIVE_SMOKE_RESULT_2026-11-01.md) · [License](LICENSE)
+*Reppo Labs develops the system being evaluated. Source code and a passing test suite make the analysis inspectable; they do not constitute independent validation.*

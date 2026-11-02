@@ -1,18 +1,8 @@
-# Reppo RewardBench: Can Independent Economic Feedback Improve Reinforcement Learning?
+# When Is an AI Judge Trustworthy?
 
-**Status: Protocol / abstract draft. No experiments reported.**
+**Reppo RewardBench — abstract for the working paper (version 0.2).**  
+**Author:** Raghav Rmadya, Reppo Labs
 
-## Abstract — prospective, not a results summary
+An AI judge can prefer a convincing answer even when the answer fails an executable test or leaves a software system in the wrong state. This paper asks whether economic coordination among evaluators helps distinguish successful agent behavior from failure. We specify a matched comparison of a single language-model judge, a uniformly weighted ensemble, and the complete Reppo Evaluation API across coding, tool use, customer-service trajectories, and research tasks. Each comparison uses candidate outputs with independently checked outcomes; the primary measure is pairwise ranking accuracy at the task level. We also specify a separate within-evaluator replay to test economic weighting, because a service-level advantage cannot establish which component caused it. Two settled arithmetic API evaluations and two engineer-attested voting reports support a limited systems audit: the API operated and displayed vote totals reconciled. They do not establish an accuracy advantage, cross-domain robustness, or an improvement from reinforcement learning. We describe the experimental controls, outcome checks, and reporting requirements needed to investigate those claims.
 
-AI systems increasingly use evaluations to select outputs, assign credit to agent actions, and update policies. Yet reward signals can be noisy, correlated, gamed or misaligned with independently verifiable outcomes. We propose RewardBench, an openly reproducible evaluation protocol measuring whether independent, economically coordinated feedback can improve reward accuracy and downstream learning for coding agents. Our protocol compares single-judge scores, uniform aggregates of independently generated assessments, and the Reppo network's composite verdict, with a separate within-assessor ablation of economic weighting where exact stake and aggregation records are accessible. We preregister task-level splits and matched outcome verification, measure accuracy and uncertainty using task-clustered resampling, and distinguish best-of-N selection from offline preference training and true online RL. We design for limited compute and publish negative or inconclusive results as well as any positive findings. **No empirical results or reinforcement-learning claims are made in this draft.**
-
-## Required sections before preprint submission
-
-1. Related work: RewardBench 2, TTRL, ThetaEvolve, credit assignment, verifier hacking.
-2. Dataset selection, licenses, provenance, exact train/validation/test partition, source code hashes.
-3. Candidate generation with frozen model versions, sampling seeds, and deterministic execution evidence.
-4. Baselines and controlled economic-weight ablations.
-5. Mean task-level accuracy, confidence intervals, robustness attacks, error analysis and cost/latency.
-6. Policy learning (if run): training curves, held-out results, matched compute, seeds, reproducible checkpoints.
-7. Threats to validity, disclosure of Reppo authorship, compute constraints and negative outcomes.
-8. Independent reproduction instructions and artifacts.
+The manuscript is a working paper. Matched coding-agent, tool-use, service and research benchmark results are not yet included. The protocol is developed by Reppo Labs, which has an interest in the system under evaluation.
