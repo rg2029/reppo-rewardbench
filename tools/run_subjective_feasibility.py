@@ -90,7 +90,11 @@ def make_body(item,index):
 def score_pair(scores,strength,eq=5):
     if len(scores)!=2 or any(type(s) not in (float,int) or not math.isfinite(s) or not 0<=s<=100 for s in scores):
         raise ValueError("Invalid settled score")
-    d=scores[0]-scores[1]
+    if type(strength) is not int or strength not in range(-3,4):
+        raise ValueError("Invalid signed human preference strength")
+    # NVIDIA HelpSteer2 sign: negative prefers response_1, positive prefers response_2.
+    # This sign convention is fixed in the paper and upstream dataset README.
+    d=scores[1]-scores[0]
     return {"human_strength":strength,"margin":round(d,4),
             "absolute_margin":round(abs(d),4),
             "equivalence_at_predeclared_5_points":abs(d)<=eq,
